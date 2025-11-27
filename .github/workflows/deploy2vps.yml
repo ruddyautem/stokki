@@ -1,0 +1,83 @@
+name: Deploy Stokki to VPS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      WORKING_DIR: /home/autem-stokki/htdocs/stokki.autem.dev
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      REPO_URL: git@github.com:TON_USER/stokki.git   # <== change this
+
+    steps:
+      # 1️⃣ Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2️⃣ Setup SSH
+      - name: Setup SSH
+        run: |
+          echo "Setting up SSH..."
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_rsa
+          ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+          echo "SSH setup complete."
+
+      # 3️⃣ Test SSH connection
+      - name: Test SSH connection
+        run: |
+          echo "Testing SSH connection to $SSH_USER@$SSH_HOST..."
+          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "whoami && pwd"
+
+      # 4️⃣ Ensure WORK_DIR exists
+      - name: Ensure remote directory
+        run: |
+          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "mkdir -p $WORKING_DIR"
+
+      # 5️⃣ Clone repo if empty, otherwise pull (with safe.directory)
+      - name: Clone or update repo
+        run: |
+          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
+            git config --global --add safe.directory $WORKING_DIR || true
+            if [ ! -d '$WORKING_DIR/.git' ]; then
+              echo 'Cloning repo...'
+              git clone $REPO_URL $WORKING_DIR
+            else
+              echo 'Pulling latest code...'
+              cd $WORKING_DIR
+              git reset --hard HEAD
+              git pull origin main
+            fi
+          "
+
+      # 6️⃣ Install dependencies
+      - name: Install dependencies
+        run: |
+          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "cd $WORKING_DIR && /home/ruddya/.bun/bin/bun install"
+
+      # 7️⃣ Build project
+      - name: Build project
+        run: |
+          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "cd $WORKING_DIR && /home/ruddya/.bun/bin/bun run build"
+
+      # 8️⃣ Reload PM2
+      - name: Reload PM2
+        run: |
+          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "cd $WORKING_DIR && pm2 reload pm2.config.cjs --update-env || pm2 start pm2.config.cjs && pm2 save"
+
+      # 9️⃣ Cleanup SSH key
+      - name: Cleanup SSH key
+        run: |
+          echo "Removing private SSH key..."
+          rm -f ~/.ssh/id_rsa
+          echo "Private key removed."
