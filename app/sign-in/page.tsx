@@ -25,11 +25,11 @@ const SignInPage = () => {
             <div className='bg-linear-to-br from-slate-700 to-slate-900 rounded-lg p-2 shadow-md'>
               <Blocks className='h-5 w-5 text-white' />
             </div>
-            <div className='text-left'>
+            <div className='text-left flex flex-col'>
               <span className='text-xl font-bold text-slate-900 block'>
                 Stokki
               </span>
-              <span className='text-xs text-slate-500'>Pro</span>
+              <span className='text-xs text-slate-500'>Inventaire</span>
             </div>
           </Link>
           <h1 className='text-3xl font-bold text-slate-900 mb-2'>
