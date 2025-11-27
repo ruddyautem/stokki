@@ -13,6 +13,7 @@ jobs:
       WORKING_DIR: /home/autem-stokki/htdocs/stokki.autem.dev
       SSH_USER: ${{ secrets.SSH_USER }}
       SSH_HOST: ${{ secrets.SSH_HOST }}
+      REPO_URL: git@github.com:TON_USER/stokki.git   # <== change this
 
     steps:
       # 1️⃣ Checkout code
@@ -38,49 +39,43 @@ jobs:
           echo "Testing SSH connection to $SSH_USER@$SSH_HOST..."
           ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "whoami && pwd"
 
-      # 4️⃣ Clean old build
-      - name: Clean previous build
+      # 4️⃣ Ensure WORK_DIR exists
+      - name: Ensure remote directory
         run: |
-          echo "Cleaning old build..."
-          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "cd $WORKING_DIR && rm -rf .next"
-          echo "Old build cleaned."
+          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "mkdir -p $WORKING_DIR"
 
-      # 5️⃣ Reset git state
-      - name: Reset git state
+      # 5️⃣ Clone repo if empty, otherwise pull (with safe.directory)
+      - name: Clone or update repo
         run: |
-          echo "Resetting git state..."
-          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "cd $WORKING_DIR && git reset --hard HEAD"
-          echo "Git state reset."
+          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
+            git config --global --add safe.directory $WORKING_DIR || true
+            if [ ! -d '$WORKING_DIR/.git' ]; then
+              echo 'Cloning repo...'
+              git clone $REPO_URL $WORKING_DIR
+            else
+              echo 'Pulling latest code...'
+              cd $WORKING_DIR
+              git reset --hard HEAD
+              git pull origin main
+            fi
+          "
 
-      # 6️⃣ Pull latest code
-      - name: Pull latest code
-        run: |
-          echo "Pulling latest code..."
-          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "cd $WORKING_DIR && git pull origin main"
-          echo "Code pulled."
-
-      # 7️⃣ Install dependencies
+      # 6️⃣ Install dependencies
       - name: Install dependencies
         run: |
-          echo "Installing dependencies..."
           ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "cd $WORKING_DIR && /home/ruddya/.bun/bin/bun install"
-          echo "Dependencies installed."
 
-      # 8️⃣ Build project
+      # 7️⃣ Build project
       - name: Build project
         run: |
-          echo "Building project..."
           ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "cd $WORKING_DIR && /home/ruddya/.bun/bin/bun run build"
-          echo "Build complete."
 
-      # 9️⃣ Reload PM2
+      # 8️⃣ Reload PM2
       - name: Reload PM2
         run: |
-          echo "Reloading PM2..."
-          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "cd $WORKING_DIR && pm2 reload pm2.config.cjs --update-env && pm2 save"
-          echo "PM2 reloaded."
+          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "cd $WORKING_DIR && pm2 reload pm2.config.cjs --update-env || pm2 start pm2.config.cjs && pm2 save"
 
-      # 🔟 Cleanup SSH key
+      # 9️⃣ Cleanup SSH key
       - name: Cleanup SSH key
         run: |
           echo "Removing private SSH key..."
