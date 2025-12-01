@@ -77,7 +77,7 @@ const ConfirmModal = ({
     >
       {/* Backdrop */}
       <div
-        className='absolute inset-0 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200'
+        className='absolute inset-0 min-h-screen bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200'
         aria-hidden='true'
       />
 

@@ -193,11 +193,11 @@ const InventoryTable = ({ items, onDeleteProduct }: InventoryTableProps) => {
                     <button
                       type='button'
                       onClick={() => handleSingleDeleteClick(item.id)}
-                      className='p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all cursor-pointer'
+                      className='p-2 hover:text-red-500 text-red-600 hover:bg-red-100 rounded-lg transition-all cursor-pointer'
                       title='Supprimer'
                       aria-label='Supprimer le produit'
                     >
-                      <Trash2 className='w-4 h-4' />
+                      <Trash2 className='w-4 h-4 ' />
                     </button>
                   </td>
                 </tr>
