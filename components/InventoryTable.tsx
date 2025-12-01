@@ -31,12 +31,12 @@ const InventoryTable = ({ items, onDeleteProduct }: InventoryTableProps) => {
 
   const inventoryTableHeaders = [
     { key: "select", label: "" },
-    { key: "name", label: "Nom" },
+    { key: "name", label: "Nom du produit" },
     { key: "sku", label: "SKU" },
     { key: "price", label: "Prix" },
     { key: "quantity", label: "Quantité" },
     { key: "lowStockAt", label: "Stock Faible à partir de" },
-    { key: "Actions", label: "" },
+    { key: "Actions", label: "Supprimer" },
   ];
 
   // Select all handler
