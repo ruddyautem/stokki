@@ -127,6 +127,16 @@ const shuffle = <T>(array: T[]) => {
   return arr;
 };
 
+// ✅ Generate quantity with 15-20% chance of being 0
+const generateQuantity = () => {
+  // 17.5% chance of quantity = 0 (average of 15-20%)
+  if (Math.random() < 0.175) {
+    return 0;
+  }
+  // 82.5% chance of quantity = 1-20
+  return Math.floor(Math.random() * 20) + 1;
+};
+
 const main = async () => {
   // 1️⃣ Get existing demo products
   const existing = await prisma.product.findMany({
@@ -152,17 +162,31 @@ const main = async () => {
   // 3️⃣ Add new items from pool
   const newItems = shuffle(ITEMS_POOL).slice(0, rotateCount);
 
-  await prisma.product.createMany({
-    data: newItems.map((name) => ({
+  const productsToCreate = newItems.map((name) => {
+    const quantity = generateQuantity(); // ✅ Use new function
+    return {
       userId: demoUserId,
       name,
       price: Number((Math.random() * 90 + 10).toFixed(2)),
-      quantity: Math.floor(Math.random() * 20),
+      quantity,
       lowStockAt: 5,
-    })),
+    };
   });
 
+  await prisma.product.createMany({
+    data: productsToCreate,
+  });
+
+  // ✅ Log statistics
+  const zeroQty = productsToCreate.filter((p) => p.quantity === 0).length;
+  const nonZeroQty = productsToCreate.length - zeroQty;
+  const percentage = ((zeroQty / productsToCreate.length) * 100).toFixed(1);
+
   console.log(`✔ Rotated ${rotateCount} products for demo user ${demoUserId}`);
+  console.log(
+    `  - ${zeroQty} items with quantity 0 (${percentage}% out of stock)`
+  );
+  console.log(`  - ${nonZeroQty} items with quantity 1-20`);
 };
 
 main()
