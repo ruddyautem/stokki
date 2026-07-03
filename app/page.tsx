@@ -20,111 +20,129 @@ export default function Home() {
     return null;
   }
 
+  const stats = [
+    { label: "Entreprises", value: "15 000+" },
+    { label: "Produits suivis", value: "2M+" },
+    { label: "Disponibilité", value: "100%" },
+  ];
+
   return (
-    <div className="h-screen w-screen overflow-hidden bg-white flex flex-col">
+    <div className='min-h-screen bg-linear-to-br from-slate-50 via-white to-slate-50 flex flex-col'>
       {/* Header */}
-      <header className="flex items-center justify-between px-8 py-5 shrink-0">
-        <div className="flex items-center gap-2">
-          <Blocks className="h-5 w-5 text-slate-900" />
-          <span className="font-semibold text-slate-900 tracking-tight">
-            stokki
-          </span>
+      <header className='sticky top-0 z-50 shrink-0 px-4 sm:px-6 lg:px-12 py-4 border-b border-slate-200/80 bg-white/80 backdrop-blur-md'>
+        <div className='max-w-7xl mx-auto flex items-center justify-between'>
+          <div className='flex items-center gap-3'>
+            <div className='bg-linear-to-br from-slate-800 to-slate-950 rounded-xl p-2 shadow-md'>
+              <Blocks className='h-5 w-5 text-white' />
+            </div>
+            <span className='font-bold text-lg text-slate-900 tracking-tight'>
+              stokki
+            </span>
+          </div>
+
+          <nav className='hidden lg:flex items-center gap-1 absolute left-1/2 -translate-x-1/2'>
+            {["Fonctionnalités", "Tarifs", "À propos"].map((item) => (
+              <span
+                key={item}
+                className='text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors px-4 py-2 rounded-lg cursor-pointer font-medium'
+              >
+                {item}
+              </span>
+            ))}
+          </nav>
+
+          <Link
+            href='/sign-in'
+            className='group inline-flex items-center gap-1.5 bg-linear-to-br from-slate-800 to-slate-950 text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:from-slate-700 hover:to-slate-900 transition-all shadow-md hover:shadow-lg'
+          >
+            <span className='hidden sm:inline'>Se connecter</span>
+            <span className='sm:hidden'>Connexion</span>
+          </Link>
         </div>
-        <Link
-          href="/sign-in"
-          className="text-sm text-slate-500 hover:text-slate-900 transition-colors"
-        >
-          Se connecter
-        </Link>
       </header>
 
-      {/* Main */}
-      <main className="flex-1 flex flex-col items-center justify-center px-6 relative">
-        {/* Faint grid */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px)",
-            backgroundSize: "48px 48px",
-          }}
-        />
+      {/* Hero */}
+      <main className='flex-1 flex flex-col'>
+        <section className='flex-1 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-12 py-16 sm:py-24 lg:py-32 relative overflow-hidden'>
+          {/* Grid background */}
+          <div
+            className='absolute inset-0 pointer-events-none opacity-60'
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px)",
+              backgroundSize: "56px 56px",
+            }}
+          />
 
-        {/* Accent blob */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-slate-100 blur-3xl opacity-60 pointer-events-none" />
+          {/* Blobs */}
+          <div className='absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full bg-linear-to-br from-slate-200 to-slate-100 blur-3xl opacity-60 pointer-events-none' />
+          <div className='absolute -bottom-32 -right-32 w-[500px] h-[500px] rounded-full bg-linear-to-br from-blue-100 to-slate-50 blur-3xl opacity-50 pointer-events-none' />
+          <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] rounded-full bg-linear-to-r from-slate-100 to-slate-50 blur-3xl opacity-80 pointer-events-none' />
 
-        <div className="relative z-10 max-w-2xl w-full text-center flex flex-col items-center gap-8">
-          {/* Tag */}
-          <div className="inline-flex items-center gap-2 border border-slate-200 rounded-full px-4 py-1.5 bg-white shadow-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            <span className="text-xs text-slate-500 tracking-wide">
-              Gestion d'inventaire
-            </span>
-          </div>
-
-          {/* Headline */}
-          <div className="flex flex-col gap-3">
-            <h1 className="text-5xl md:text-6xl font-bold text-slate-900 leading-[1.05] tracking-tight">
-              Vos stocks,
-              <br />
-              sous contrôle.
-            </h1>
-            <p className="text-slate-400 text-lg max-w-md mx-auto leading-relaxed">
-              Suivez, analysez et anticipez vos inventaires — sans la
-              complexité.
-            </p>
-          </div>
-
-          {/* CTA */}
-          <div className="flex items-center gap-3">
-            <Link
-              href="/sign-in"
-              className="group inline-flex items-center gap-2 bg-slate-900 text-white text-sm font-medium px-6 py-3 rounded-xl hover:bg-slate-700 transition-colors shadow-md"
-            >
-              Commencer
-              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-            </Link>
-            <Link
-              href="/sign-in"
-              className="inline-flex items-center text-sm text-slate-500 hover:text-slate-800 transition-colors px-4 py-3"
-            >
-              En savoir plus
-            </Link>
-          </div>
-
-          {/* Pill stats */}
-          <div className="flex items-center gap-3 flex-wrap justify-center mt-2">
-            {[
-              { label: "Entreprises", value: "15 000+" },
-              { label: "Produits suivis", value: "2M+" },
-              { label: "Disponibilité", value: "99.99%" },
-            ].map((s) => (
-              <div
-                key={s.label}
-                className="flex items-center gap-2.5 bg-slate-50 border border-slate-200 rounded-full px-5 py-2"
-              >
-                <span className="text-sm font-semibold text-slate-900">
-                  {s.value}
-                </span>
-                <span className="text-xs text-slate-500">{s.label}</span>
+          <div className='relative z-10 max-w-5xl w-full mx-auto flex flex-col items-center gap-10 sm:gap-14'>
+            {/* Headline block */}
+            <div className='text-center flex flex-col gap-6 sm:gap-8'>
+              <div className='flex flex-col gap-1'>
+                <h1 className='text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-slate-900 leading-[1.02] tracking-tight'>
+                  Vos stocks,
+                </h1>
+                <h1 className='text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-[1.02] tracking-tight bg-linear-to-br from-emerald-500 to-emerald-700 bg-clip-text text-transparent'>
+                  sous contrôle.
+                </h1>
               </div>
-            ))}
+
+              <div className='flex flex-col gap-1'>
+                <p className='text-xl sm:text-2xl md:text-3xl text-slate-500 font-medium leading-snug tracking-tight'>
+                  Suivez, analysez et anticipez vos inventaires.
+                </p>
+                <p className='text-xl sm:text-2xl md:text-3xl font-semibold leading-snug tracking-tight text-slate-800'>
+                  En toute simplicité.
+                </p>
+              </div>
+            </div>
+
+            {/* CTAs */}
+            <div className='flex flex-col sm:flex-row items-center gap-4'>
+              <Link
+                href='/sign-in'
+                className='group inline-flex items-center justify-center gap-2 bg-linear-to-br from-slate-800 to-slate-950 text-white text-sm sm:text-base font-semibold px-8 py-4 rounded-xl hover:from-slate-700 hover:to-slate-900 transition-all shadow-xl hover:shadow-2xl'
+              >
+                Commencer gratuitement
+                <ArrowUpRight className='w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform' />
+              </Link>
+              <Link
+                href='/sign-in'
+                className='inline-flex items-center justify-center text-sm sm:text-base text-slate-600 hover:text-slate-900 transition-colors px-6 py-4 font-medium border border-slate-200 rounded-xl bg-white/70 hover:bg-white hover:border-slate-300 hover:shadow-md'
+              >
+                En savoir plus
+              </Link>
+            </div>
+
+            {/* Stats */}
+            <div className='flex flex-wrap items-center justify-center gap-3 sm:gap-4'>
+              {stats.map((s) => (
+                <div
+                  key={s.label}
+                  className='flex items-baseline gap-2 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl px-5 sm:px-6 py-3 sm:py-4 shadow-sm hover:shadow-md transition-shadow'
+                >
+                  <span className='text-xl sm:text-2xl font-bold text-slate-900'>
+                    {s.value}
+                  </span>
+                  <span className='text-xs sm:text-sm text-slate-500 font-medium'>
+                    {s.label}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        </section>
       </main>
 
-      <footer className="shrink-0 px-8 py-5 flex items-center justify-between border-t border-slate-100">
-        <p className="text-xs text-slate-400">© 2024 Stokki</p>
-        <div className="flex items-center gap-6">
-          {["Sécurité", "Confidentialité", "Contact"].map((item) => (
-            <span
-              key={item}
-              className="text-xs text-slate-400 hover:text-slate-700 cursor-pointer transition-colors"
-            >
-              {item}
-            </span>
-          ))}
-        </div>
+      {/* Footer */}
+      <footer className='shrink-0 px-4 sm:px-6 lg:px-12 py-6 flex items-center justify-center border-t border-slate-200/80 bg-white/50 backdrop-blur-sm'>
+        <p className='text-[10px] sm:text-xs text-slate-400 uppercase tracking-widest text-center font-medium'>
+          © 2026 Stokki.autem.dev. Tous droits réservés.
+        </p>
       </footer>
     </div>
   );

@@ -26,7 +26,6 @@ const Sidebar = () => {
             <span className='text-xl font-bold text-slate-900 block'>
               Stokki
             </span>
-            <span className='text-xs text-slate-500'>Inventaire</span>
           </div>
         </div>
       </div>
