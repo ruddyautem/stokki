@@ -17,15 +17,15 @@ function MainContentSkeleton({
   showSidebar?: boolean;
 }) {
   return (
-    <main className={showSidebar ? "ml-64 p-8" : "p-8"}>
+    <main className={`p-4 pt-16 ${showSidebar ? "lg:ml-64 lg:p-8" : ""}`}>
       {/* Header skeleton */}
-      <div className="mb-8">
+      <div className="mb-6 lg:mb-8">
         <Skeleton className="h-9 w-48 mb-2" />
         <Skeleton className="h-5 w-80" />
       </div>
 
       {/* Stats Cards skeleton - 3 columns */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mb-6 lg:mb-8">
         {[1, 2, 3].map((i) => (
           <div
             key={i}
@@ -42,18 +42,18 @@ function MainContentSkeleton({
       </div>
 
       {/* Middle Row - Chart and Stock Levels */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 mb-6 lg:mb-8">
         {/* Products Chart skeleton */}
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
+        <div className="bg-white rounded-xl border border-slate-200 p-4 sm:p-6 shadow-sm">
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
             <Skeleton className="h-6 w-56" />
           </div>
-          <Skeleton className="h-48 w-full" />
+          <Skeleton className="h-40 sm:h-48 w-full" />
         </div>
 
         {/* Stock Levels skeleton */}
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
+        <div className="bg-white rounded-xl border border-slate-200 p-4 sm:p-6 shadow-sm">
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
             <Skeleton className="h-6 w-52" />
           </div>
           <div className="space-y-3">
@@ -74,17 +74,17 @@ function MainContentSkeleton({
       </div>
 
       {/* Stock Percentage - Full width with donut chart and legend */}
-      <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-        <div className="flex items-center justify-between mb-6">
+      <div className="bg-white rounded-xl border border-slate-200 p-4 sm:p-6 shadow-sm">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
           <Skeleton className="h-6 w-64" />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           {/* Donut chart skeleton */}
-          <div className="flex items-center justify-center">
-            <div className="relative w-48 h-48">
-              <Skeleton className="w-48 h-48 rounded-full" />
+          <div className="flex items-center justify-center py-4 sm:py-0">
+            <div className="relative w-40 h-40 sm:w-48 sm:h-48">
+              <Skeleton className="w-full h-full rounded-full" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-white w-32 h-32 rounded-full flex items-center justify-center">
+                <div className="bg-white w-28 sm:w-32 h-28 sm:h-32 rounded-full flex items-center justify-center">
                   <div className="text-center">
                     <Skeleton className="h-8 w-16 mx-auto mb-1" />
                     <Skeleton className="h-3 w-12 mx-auto" />

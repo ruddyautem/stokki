@@ -54,14 +54,14 @@ const Pagination = ({
   const visiblePages = getVisiblePages();
 
   return (
-    <nav className='flex items-center justify-center gap-2'>
+    <nav className='flex flex-wrap items-center justify-center gap-1 sm:gap-2'>
       {/* Previous */}
       {currentPage <= 1 ? (
         <span
           className='flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg
           text-slate-400 bg-slate-100 cursor-not-allowed select-none'
         >
-          <ChevronLeft className='w-4 h-4' /> Précédent
+          <ChevronLeft className='w-4 h-4' /><span className='hidden sm:inline'> Précédent</span>
         </span>
       ) : (
         <Link
@@ -69,7 +69,7 @@ const Pagination = ({
           className='flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg
           text-slate-700 hover:bg-slate-100 bg-white border border-slate-200 transition-colors hover:border-slate-300'
         >
-          <ChevronLeft className='w-4 h-4' /> Précédent
+          <ChevronLeft className='w-4 h-4' /><span className='hidden sm:inline'> Précédent</span>
         </Link>
       )}
 
@@ -116,7 +116,7 @@ const Pagination = ({
           className='flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg
           text-slate-400 bg-slate-100 cursor-not-allowed select-none'
         >
-          Suivant <ChevronRight className='w-4 h-4' />
+          <span className='hidden sm:inline'>Suivant </span><ChevronRight className='w-4 h-4' />
         </span>
       ) : (
         <Link
@@ -124,7 +124,7 @@ const Pagination = ({
           className='flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-lg
           text-slate-700 hover:bg-slate-100 bg-white border border-slate-200 transition-colors hover:border-slate-300'
         >
-          Suivant <ChevronRight className='w-4 h-4' />
+          <span className='hidden sm:inline'>Suivant </span><ChevronRight className='w-4 h-4' />
         </Link>
       )}
     </nav>

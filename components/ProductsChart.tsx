@@ -94,7 +94,8 @@ const ProductsChart = ({ data }: { data: ChartData[] }) => {
     <ResponsiveContainer width="100%" height="100%">
       <AreaChart
         data={cleanedData}
-        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+        margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
+        barGap={0}
       >
         <defs>
           <linearGradient id="colorProducts" x1="0" y1="0" x2="0" y2="1">
@@ -112,14 +113,7 @@ const ProductsChart = ({ data }: { data: ChartData[] }) => {
           tickFormatter={formatDateToFrench}
           style={{ fontWeight: 500 }}
         />
-        <YAxis
-          stroke="#64748b"
-          fontSize={12}
-          tickLine={false}
-          axisLine={false}
-          allowDecimals={false}
-          style={{ fontWeight: 500 }}
-        />
+        <YAxis hide />
         <Area
           type="monotone"
           dataKey="products"

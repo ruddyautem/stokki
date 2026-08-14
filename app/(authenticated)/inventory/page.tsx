@@ -50,27 +50,23 @@ const Inventory = async ({
 
   return (
     <div className='min-h-screen bg-slate-50'>
-      <main className='ml-64 p-8'>
+      <main className='p-4 pt-16 lg:ml-64 lg:p-8'>
         {/* Header */}
-        <div className='mb-8'>
-          <div className='flex items-center justify-between'>
-            <div>
-              <h1 className='text-3xl font-bold text-slate-900'>Inventaire</h1>
-              <p className='text-slate-600 mt-1'>
-                Gérez vos produits et suivez les niveaux de stock
-              </p>
-            </div>
-            <div className='flex items-center gap-2 text-sm text-slate-600'>
-              <span className='font-medium'>{totalCount}</span>
-              <span>produit{totalCount !== 1 ? "s" : ""} au total</span>
-            </div>
+        <div className='mb-6 lg:mb-8 text-center'>
+          <h1 className='text-2xl sm:text-3xl font-bold text-slate-900'>Inventaire</h1>
+          <p className='text-slate-600 mt-1'>
+            Gérez vos produits et suivez les niveaux de stock
+          </p>
+          <div className='mt-2 inline-flex items-center gap-2 text-sm text-slate-500 bg-white px-4 py-1.5 rounded-full border border-slate-200'>
+            <span className='font-semibold text-slate-900'>{totalCount}</span>
+            <span>produit{totalCount !== 1 ? "s" : ""} au total</span>
           </div>
         </div>
 
-        <div className='space-y-6'>
+        <div className='space-y-4 lg:space-y-6 pb-24 lg:pb-0'>
           {/* Search */}
-          <div className='bg-white rounded-xl border border-slate-200 p-6 shadow-sm'>
-            <form action='/inventory' className='flex gap-3' method='GET'>
+          <div className='bg-white rounded-xl border border-slate-200 p-4 sm:p-6 shadow-sm'>
+            <form action='/inventory' className='flex flex-col sm:flex-row gap-3' method='GET'>
               <div className='flex-1 relative'>
                 <Search className='absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400' />
                 <input
@@ -94,7 +90,7 @@ const Inventory = async ({
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className='bg-white rounded-xl border border-slate-200 p-6 shadow-sm'>
+            <div className='bg-white rounded-xl border border-slate-200 p-4 sm:p-6 shadow-sm'>
               <Pagination
                 currentPage={page}
                 baseUrl='/inventory'

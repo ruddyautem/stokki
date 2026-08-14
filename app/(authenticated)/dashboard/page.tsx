@@ -85,29 +85,25 @@ const DashboardPage = async () => {
 
   return (
     <div className='min-h-screen bg-slate-50'>
-      <main className='ml-64 p-8'>
+      <main className='p-4 pt-16 lg:ml-64 lg:p-8'>
         {/* Header */}
-        <div className='mb-8'>
-          <div className='flex items-center justify-between'>
-            <div>
-              <h1 className='text-3xl font-bold text-slate-900'>
-                Tableau de bord
-              </h1>
-              <p className='text-slate-600 mt-1'>
-                Voici un aperçu de vos statistiques d'inventaire
-              </p>
-            </div>
-          </div>
+        <div className='mb-6 lg:mb-8 text-center w-full'>
+          <h1 className='text-2xl sm:text-3xl font-bold text-slate-900'>
+            Tableau de bord
+          </h1>
+          <p className='text-slate-600 mt-1'>
+            Voici un aperçu de vos statistiques d'inventaire
+          </p>
         </div>
 
         {/* Stats Cards */}
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-8'>
-          <div className='bg-white rounded-xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-shadow'>
-            <div className='flex items-center justify-between mb-4'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mb-6 lg:mb-8'>
+          <div className='bg-white rounded-xl border border-slate-200 p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow text-center lg:text-left'>
+            <div className='flex flex-col sm:flex-row items-center justify-between gap-3 mb-4'>
               <div className='bg-slate-100 rounded-lg p-3'>
                 <Package className='w-6 h-6 text-slate-700' />
               </div>
-              <div className='flex items-center text-emerald-600 text-sm font-medium'>
+              <div className='flex items-center text-emerald-600 text-sm font-medium justify-center sm:justify-start'>
                 <TrendingUp className='w-4 h-4 mr-1' />+{totalProducts}
               </div>
             </div>
@@ -117,12 +113,12 @@ const DashboardPage = async () => {
             <div className='text-sm text-slate-600'>Total produits</div>
           </div>
 
-          <div className='bg-white rounded-xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-shadow'>
-            <div className='flex items-center justify-between mb-4'>
+          <div className='bg-white rounded-xl border border-slate-200 p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow text-center lg:text-left'>
+            <div className='flex flex-col sm:flex-row items-center justify-between gap-3 mb-4'>
               <div className='bg-slate-100 rounded-lg p-3'>
                 <DollarSign className='w-6 h-6 text-[#10b981]' />
               </div>
-              <div className='flex items-center text-emerald-600 text-sm font-medium'>
+              <div className='flex items-center text-emerald-600 text-sm font-medium justify-center sm:justify-start'>
                 <TrendingUp className='w-4 h-4 mr-1' />+
                 {Number(totalValue).toFixed(0)} €
               </div>
@@ -133,12 +129,12 @@ const DashboardPage = async () => {
             <div className='text-sm text-slate-600'>Valeur totale</div>
           </div>
 
-          <div className='bg-white rounded-xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-shadow'>
-            <div className='flex items-center justify-between mb-4'>
+          <div className='bg-white rounded-xl border border-slate-200 p-5 sm:p-6 shadow-sm hover:shadow-md transition-shadow text-center lg:text-left'>
+            <div className='flex flex-col sm:flex-row items-center justify-between gap-3 mb-4'>
               <div className='bg-amber-100 rounded-lg p-3'>
                 <AlertTriangle className='w-6 h-6 text-amber-600' />
               </div>
-              <div className='flex items-center text-slate-600 text-sm font-medium'>
+              <div className='flex items-center text-slate-600 text-sm font-medium justify-center sm:justify-start'>
                 {lowStock} alertes
               </div>
             </div>
@@ -149,26 +145,23 @@ const DashboardPage = async () => {
           </div>
         </div>
 
-        <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8'>
+        {/* Chart + Stock Levels */}
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 mb-6 lg:mb-8'>
           {/* Products Chart */}
-          <div className='bg-white rounded-xl border border-slate-200 p-6 shadow-sm'>
-            <div className='flex items-center justify-between mb-6'>
-              <h2 className='text-lg font-bold text-slate-900'>
-                Nouveaux produits (par semaine)
-              </h2>
-            </div>
-            <div className='h-48'>
+          <div className='bg-white rounded-xl border border-slate-200 p-4 sm:p-6 shadow-sm text-center lg:text-left'>
+            <h2 className='text-lg font-bold text-slate-900 mb-4 sm:mb-6'>
+              Nouveaux produits (par semaine)
+            </h2>
+            <div className='w-full h-40 sm:h-48'>
               <ProductsChart data={weeklyProductsData} />
             </div>
           </div>
 
           {/* Stock Levels */}
-          <div className='bg-white rounded-xl border border-slate-200 p-6 shadow-sm'>
-            <div className='flex items-center justify-between mb-6'>
-              <h2 className='text-lg font-bold text-slate-900'>
-                Quantité de produits en stock
-              </h2>
-            </div>
+          <div className='bg-white rounded-xl border border-slate-200 p-4 sm:p-6 shadow-sm'>
+            <h2 className='text-lg font-bold text-slate-900 text-center lg:text-left w-full mb-4 sm:mb-6'>
+              Quantité de produits en stock
+            </h2>
             <div className='space-y-3'>
               {recent.length === 0 ? (
                 <p className='text-center text-slate-500 py-8'>
@@ -214,21 +207,19 @@ const DashboardPage = async () => {
         </div>
 
         {/* Stock Percentage */}
-        <div className='bg-white rounded-xl border border-slate-200 p-6 shadow-sm'>
-          <div className='flex items-center justify-between mb-6'>
-            <h2 className='text-lg font-bold text-slate-900'>
-              Niveau de stock (en pourcentage)
-            </h2>
-          </div>
-          <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
-            <div className='flex items-center justify-center'>
+        <div className='bg-white rounded-xl border border-slate-200 p-4 sm:p-6 shadow-sm'>
+          <h2 className='text-lg font-bold text-slate-900 text-center lg:text-left w-full mb-4 sm:mb-6'>
+            Niveau de stock (en pourcentage)
+          </h2>
+          <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-center'>
+            <div className='flex items-center justify-center py-4 order-first lg:order-first'>
               <StockDonutChart
                 data={stockData}
                 inStockPercentage={inStockPercentage}
               />
             </div>
-            <div className='flex flex-col justify-center space-y-4'>
-              <div className='flex items-center justify-between p-4 rounded-lg bg-slate-50'>
+            <div className='flex flex-col space-y-3 sm:space-y-4 items-center sm:items-start'>
+              <div className='w-full flex items-center justify-between p-3 sm:p-4 rounded-lg bg-slate-50 text-center sm:text-left'>
                 <div className='flex items-center space-x-3'>
                   <div className='w-4 h-4 rounded-full bg-[#10b981]' />
                   <span className='text-sm font-medium text-slate-900'>
@@ -239,7 +230,7 @@ const DashboardPage = async () => {
                   {inStockPercentage}%
                 </span>
               </div>
-              <div className='flex items-center justify-between p-4 rounded-lg bg-slate-50'>
+              <div className='w-full flex items-center justify-between p-3 sm:p-4 rounded-lg bg-slate-50 text-center sm:text-left'>
                 <div className='flex items-center space-x-3'>
                   <div className='w-4 h-4 rounded-full bg-[#f59e0b]' />
                   <span className='text-sm font-medium text-slate-900'>
@@ -250,7 +241,7 @@ const DashboardPage = async () => {
                   {lowStockPercentage}%
                 </span>
               </div>
-              <div className='flex items-center justify-between p-4 rounded-lg bg-slate-50'>
+              <div className='w-full flex items-center justify-between p-3 sm:p-4 rounded-lg bg-slate-50 text-center sm:text-left'>
                 <div className='flex items-center space-x-3'>
                   <div className='w-4 h-4 rounded-full bg-[#ef4444]' />
                   <span className='text-sm font-medium text-slate-900'>
