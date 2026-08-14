@@ -1,6 +1,7 @@
 "use client";
 
 import { X, AlertTriangle } from "lucide-react";
+import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { useEffect } from "react";
 
 interface ConfirmModalProps {
@@ -24,16 +25,7 @@ const ConfirmModal = ({
   cancelText = "Annuler",
   isLoading = false,
 }: ConfirmModalProps) => {
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen]);
+  useBodyScrollLock(isOpen);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {

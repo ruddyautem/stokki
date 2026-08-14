@@ -4,7 +4,8 @@ import { UserButton } from "@stackframe/stack";
 import { Blocks, Menu, Package, Plus, Settings, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 
 const Sidebar = () => {
   const pathname = usePathname();
@@ -16,12 +17,7 @@ const Sidebar = () => {
   }, [pathname]);
 
   // Lock body scroll when sidebar is open on mobile
-  useEffect(() => {
-    document.body.style.overflow = isOpen ? "hidden" : "unset";
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen]);
+  useBodyScrollLock(isOpen);
 
   const navigation = [
     { name: "Tableau de bord", href: "/dashboard", icon: Blocks },

@@ -6,6 +6,7 @@ import { ArrowLeft, Package } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useState } from "react";
+import FormInput from "@/components/FormInput";
 
 const AddProductPage = () => {
   const router = useRouter();
@@ -45,12 +46,8 @@ const AddProductPage = () => {
               <Package className='w-6 h-6 text-white' />
             </div>
             <div>
-              <h1 className='text-2xl sm:text-3xl font-bold text-slate-900'>
-                Ajouter un produit
-              </h1>
-              <p className='text-slate-600 mt-1'>
-                Ajouter un nouveau produit à votre inventaire
-              </p>
+              <h1 className='text-2xl sm:text-3xl font-bold text-slate-900'>Ajouter un produit</h1>
+              <p className='text-slate-600 mt-1'>Ajouter un nouveau produit à votre inventaire</p>
             </div>
           </div>
         </div>
@@ -58,112 +55,25 @@ const AddProductPage = () => {
         <div className='max-w-3xl mx-auto'>
           <div className='bg-white rounded-xl border border-slate-200 p-4 sm:p-6 lg:p-8 shadow-sm'>
             <form className='space-y-6' onSubmit={handleSubmit}>
-              <div>
-                <label
-                  htmlFor='name'
-                  className='block text-sm font-semibold text-slate-900 mb-2'
-                >
-                  Nom du produit <span className='text-red-500'>*</span>
-                </label>
-                <input
-                  type='text'
-                  name='name'
-                  id='name'
-                  required
-                  className='w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-800 focus:border-transparent transition-all'
-                  placeholder='Ex: Ordinateur portable Dell XPS 15'
-                />
-              </div>
+              <FormInput id='name' name='name' label='Nom du produit' required placeholder='Ex: Ordinateur portable Dell XPS 15' />
 
               <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6'>
-                <div>
-                  <label
-                    htmlFor='quantity'
-                    className='block text-sm font-semibold text-slate-900 mb-2'
-                  >
-                    Quantité <span className='text-red-500'>*</span>
-                  </label>
-                  <input
-                    type='number'
-                    name='quantity'
-                    id='quantity'
-                    min={0}
-                    required
-                    className='w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-800 focus:border-transparent transition-all'
-                    placeholder='0'
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor='price'
-                    className='block text-sm font-semibold text-slate-900 mb-2'
-                  >
-                    Prix (€) <span className='text-red-500'>*</span>
-                  </label>
-                  <input
-                    type='number'
-                    name='price'
-                    id='price'
-                    step={0.01}
-                    min={0}
-                    required
-                    className='w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-800 focus:border-transparent transition-all'
-                    placeholder='0.00'
-                  />
-                </div>
+                <FormInput type='number' id='quantity' name='quantity' label='Quantité' required min={0} placeholder='0' />
+                <FormInput type='number' id='price' name='price' label='Prix (€)' required step={0.01} min={0} placeholder='0.00' />
               </div>
 
-              <div>
-                <label
-                  htmlFor='sku'
-                  className='block text-sm font-semibold text-slate-900 mb-2'
-                >
-                  SKU <span className='text-slate-400'>(Facultatif)</span>
-                </label>
-                <input
-                  type='text'
-                  name='sku'
-                  id='sku'
-                  className='w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-800 focus:border-transparent transition-all'
-                  placeholder='Ex: DELL-XPS15-001'
-                />
-              </div>
+              <FormInput id='sku' name='sku' label='SKU' optionalLabel={'(Facultatif)'} placeholder='Ex: DELL-XPS15-001' />
 
               <div>
-                <label
-                  htmlFor='lowStockAt'
-                  className='block text-sm font-semibold text-slate-900 mb-2'
-                >
-                  Seuil de stock faible{" "}
-                  <span className='text-slate-400'>(Facultatif)</span>
-                </label>
-                <input
-                  type='number'
-                  name='lowStockAt'
-                  id='lowStockAt'
-                  min={0}
-                  className='w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-800 focus:border-transparent transition-all'
-                  placeholder='Ex: 5'
-                />
-                <p className='text-xs text-slate-500 mt-2'>
-                  Vous recevrez une alerte lorsque le stock atteindra ce seuil
-                </p>
+                <FormInput type='number' id='lowStockAt' name='lowStockAt' label='Seuil de stock faible' optionalLabel={'(Facultatif)'} min={0} placeholder='Ex: 5' />
+                <p className='text-xs text-slate-500 mt-2'>Vous recevrez une alerte lorsque le stock atteindra ce seuil</p>
               </div>
 
               <div className='flex flex-col sm:flex-row gap-3 pt-4 items-center justify-center '>
-                <button
-                  type='submit'
-                  disabled={isSubmitting}
-                  className='w-full sm:w-auto px-8 py-3 bg-slate-800 text-white rounded-lg font-medium hover:bg-slate-900 transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer'
-                >
+                <button type='submit' disabled={isSubmitting} className='w-full sm:w-auto px-8 py-3 bg-slate-800 text-white rounded-lg font-medium hover:bg-slate-900 transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer'>
                   {isSubmitting ? "Ajout en cours..." : "Ajouter le produit"}
                 </button>
-                <Link
-                  href='/inventory'
-                  className='w-full sm:w-auto text-center px-8 py-3 bg-slate-100 text-slate-700 rounded-lg font-medium hover:bg-slate-200 transition-all'
-                >
-                  Annuler
-                </Link>
+                <Link href='/inventory' className='w-full sm:w-auto text-center px-8 py-3 bg-slate-100 text-slate-700 rounded-lg font-medium hover:bg-slate-200 transition-all'>Annuler</Link>
               </div>
             </form>
           </div>

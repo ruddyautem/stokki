@@ -1,37 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📦 Stokki
+
+A modern inventory management web application — track, analyze, and anticipate your stock levels with ease.
+
+## Features
+
+- **Dashboard** — Overview of total products, inventory value, low-stock alerts, weekly product trends (area chart), and real-time stock-level breakdowns (donut chart).
+- **Inventory** — Searchable, paginated product table with bulk selection and deletion. Responsive card layout on mobile.
+- **Add Product** — Form to create new products with name, quantity, price, optional SKU, and customizable low-stock threshold.
+- **Settings** — Account management powered by [Stack Auth](https://stack-auth.com).
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 16 (App Router) |
+| Language | TypeScript |
+| Styling | Tailwind CSS v4 |
+| Database ORM | Prisma |
+| Authentication | Stack Auth |
+| Charts | Recharts |
+| Validation | Zod |
+| Package Manager / Runtime | Bun |
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Install dependencies
+bun install
+
+# Generate Prisma client
+npx prisma generate
+
+# Push schema to database
+npx prisma db push
+
+# Start dev server
+bun run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The app runs at [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+├── app/                      # Next.js App Router pages & layouts
+│   └── (authenticated)/      # Protected routes (dashboard, inventory, etc.)
+├── components/               # Reusable UI components
+├── hooks/                    # Custom React hooks
+├── lib/                      # Server utilities (auth, db, server actions)
+├── prisma/                   # Database schema & migrations
+└── stack/                    # Stack Auth configuration
+```
 
-## Learn More
+## License
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# stokki
+© 2026 Stokki.autem.dev. All rights reserved.
