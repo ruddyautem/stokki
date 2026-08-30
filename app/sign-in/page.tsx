@@ -1,7 +1,7 @@
 "use client";
 
 import { SignIn, useStackApp } from "@stackframe/stack";
-import { ArrowLeft, Blocks, Copy, User } from "lucide-react";
+import { ArrowLeft, Blocks, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
@@ -10,7 +10,7 @@ const SignInPage = () => {
   const app = useStackApp();
   const router = useRouter();
 
-  const copyToClipboard = (text: string, type: string) => {
+  const _copyToClipboard = (text: string, type: string) => {
     navigator.clipboard.writeText(text);
     toast.success(`${type === "email" ? "Email" : "Mot de passe"} copié !`, {
       autoClose: 2000,
@@ -91,7 +91,7 @@ const SignInPage = () => {
                     });
                     router.push("/dashboard");
                   }
-                } catch (e) {
+                } catch (_e) {
                   toast.update(toastId, {
                     render: "Erreur de connexion",
                     type: "error",
@@ -104,42 +104,6 @@ const SignInPage = () => {
             >
               Connexion en un clic
             </button>
-          </div>
-
-          <div className="space-y-3">
-            <div className="bg-slate-700/50 rounded-lg p-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-slate-400 mb-1">Email</p>
-                  <p className="text-sm font-mono text-white">test@test.com</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => copyToClipboard("test@test.com", "email")}
-                  className="p-2 hover:bg-slate-600 rounded-lg transition-colors cursor-pointer"
-                  title="Copier l'email"
-                >
-                  <Copy className="w-4 h-4 text-slate-300" />
-                </button>
-              </div>
-            </div>
-
-            <div className="bg-slate-700/50 rounded-lg p-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-slate-400 mb-1">Mot de passe</p>
-                  <p className="text-sm font-mono text-white">test123456</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => copyToClipboard("test123456", "password")}
-                  className="p-2 hover:bg-slate-600 rounded-lg transition-colors cursor-pointer"
-                  title="Copier le mot de passe"
-                >
-                  <Copy className="w-4 h-4 text-slate-300" />
-                </button>
-              </div>
-            </div>
           </div>
         </div>
 
