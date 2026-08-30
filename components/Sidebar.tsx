@@ -33,7 +33,7 @@ const Sidebar = () => {
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="fixed top-3 left-3 z-[60] bg-white/90 backdrop-blur-md border border-slate-200 rounded-xl p-2.5 shadow-lg lg:hidden hover:bg-white hover:shadow-xl active:scale-95 transition-all cursor-pointer"
+        className="fixed top-3 left-3 z-60 bg-white/90 backdrop-blur-md border border-slate-200 rounded-xl p-2.5 shadow-lg lg:hidden hover:bg-white hover:shadow-xl active:scale-95 transition-all cursor-pointer"
         aria-label="Ouvrir le menu"
       >
         <Menu className="w-5 h-5 text-slate-800" />
@@ -48,35 +48,31 @@ const Sidebar = () => {
         />
       )}
 
-      {/* Sidebar */}
       <div
-        className={`fixed left-0 top-0 h-screen bg-white border-r border-slate-200 z-40 transition-transform duration-300 ease-in-out shadow-sm ${
+        className={`fixed lg:relative left-0 top-0 h-dvh lg:h-full flex flex-col bg-white border-r border-slate-200 z-40 transition-transform duration-300 ease-in-out shadow-sm ${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 w-64 min-h-screen p-4`}
+        } lg:translate-x-0 w-64 lg:shrink-0 pt-4 px-4 pb-4`}
       >
-        {/* Mobile close button */}
-        <div className="flex justify-end lg:hidden mb-2">
-          <button
-            type="button"
-            onClick={() => setIsOpen(false)}
-            className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
-            aria-label="Fermer le menu"
-          >
-            <X className="w-5 h-5 text-slate-600" />
-          </button>
-        </div>
-
-        <div className="mb-8 px-2">
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="bg-linear-to-br from-slate-700 to-slate-900 rounded-lg p-2 shadow-md">
-              <Blocks className="h-5 w-5 text-white" />
+        <div className="flex items-center justify-between mb-8 px-2">
+          <div className="flex items-center space-x-3">
+            <div className="bg-linear-to-br from-slate-700 to-slate-900 rounded-lg p-2 shadow-md hidden lg:block">
+              <Blocks className="h-5 w-5 text-white " />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-bold text-slate-900 block">
+              <span className="text-xl font-bold text-slate-900 block ml-10 lg:ml-0">
                 Stokki
               </span>
             </div>
           </div>
+
+          <button
+            type="button"
+            onClick={() => setIsOpen(false)}
+            className="lg:hidden p-2 -mr-2 rounded-lg hover:bg-slate-100 transition-colors"
+            aria-label="Fermer le menu"
+          >
+            <X className="w-5 h-5 text-slate-600" />
+          </button>
         </div>
 
         <nav className="space-y-1">
@@ -106,7 +102,7 @@ const Sidebar = () => {
           })}
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200 bg-white">
+        <div className="mt-auto -mx-4 -mb-4 p-4 border-t border-slate-200 bg-white">
           <UserButton showUserInfo />
         </div>
       </div>

@@ -29,10 +29,16 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans selection:bg-slate-900 selection:text-white text-slate-900`}
       >
         <StackProvider app={stackClientApp} lang="fr-FR">
-          <StackTheme>{children}</StackTheme>
+          <StackTheme>
+            <div className="flex flex-col h-[100dvh] w-full">
+              <div className="flex-1 flex flex-col min-h-0 w-full overflow-hidden">
+                {children}
+              </div>
+            </div>
+          </StackTheme>
         </StackProvider>
         <ToastContainer
           position="bottom-center"

@@ -17,7 +17,9 @@ function MainContentSkeleton({
   showSidebar?: boolean;
 }) {
   return (
-    <main className={`p-4 pt-16 ${showSidebar ? "lg:ml-64 lg:p-8" : ""}`}>
+    <main
+      className={`flex-1 overflow-auto p-4 pt-16 ${showSidebar ? "lg:p-8" : ""}`}
+    >
       {/* Header skeleton */}
       <div className="mb-6 lg:mb-8">
         <Skeleton className="h-9 w-48 mb-2" />
@@ -115,6 +117,8 @@ function MainContentSkeleton({
   );
 }
 
+import Footer from "@/components/Footer";
+
 export default function Loading() {
   const pathname = usePathname();
 
@@ -122,9 +126,12 @@ export default function Loading() {
   const showSidebar = !["/", "/sign-in", "/sign-up"].includes(pathname);
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="flex-1 flex min-h-0 bg-slate-50 relative">
       {showSidebar && <Sidebar />}
-      <MainContentSkeleton showSidebar={showSidebar} />
+      <div className="flex-1 flex flex-col min-h-0">
+        <MainContentSkeleton showSidebar={showSidebar} />
+        <Footer />
+      </div>
     </div>
   );
 }
