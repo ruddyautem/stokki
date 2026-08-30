@@ -1,10 +1,10 @@
-import PageLayout from "@/components/PageLayout";
-import getCurrentUser from "@/lib/auth";
 import { AccountSettings } from "@stackframe/stack";
 import { Settings as SettingsIcon } from "lucide-react";
+import PageLayout from "@/components/PageLayout";
+import getCurrentUser from "@/lib/auth";
 
 const Settings = async () => {
-  const user = await getCurrentUser();
+  const _user = await getCurrentUser();
   return (
     <PageLayout
       title={

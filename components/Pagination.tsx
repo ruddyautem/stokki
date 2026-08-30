@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
 import PaginationButton from "./PaginationButton";
 
 interface PaginationProps {
@@ -55,20 +55,25 @@ const Pagination = ({
   const visiblePages = getVisiblePages();
 
   return (
-    <nav className='flex flex-wrap items-center justify-center gap-1 sm:gap-2'>
+    <nav className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
       {/* Previous */}
-      <PaginationButton href={currentPage > 1 ? getPageUrl(currentPage - 1) : undefined} disabled={currentPage <= 1}>
-        <ChevronLeft className='w-4 h-4' /><span className='hidden sm:inline'> Précédent</span>
+      <PaginationButton
+        href={currentPage > 1 ? getPageUrl(currentPage - 1) : undefined}
+        disabled={currentPage <= 1}
+      >
+        <ChevronLeft className="w-4 h-4" />
+        <span className="hidden sm:inline"> Précédent</span>
       </PaginationButton>
 
       {/* Middle pages */}
-      <div className='flex items-center gap-1'>
+      <div className="flex items-center gap-1">
         {visiblePages.map((page, index) => {
           if (page === "...") {
             return (
+              // biome-ignore lint/suspicious/noArrayIndexKey: dots can appear multiple times
               <span
                 key={`dots-${index}`}
-                className='px-3 py-2 text-sm text-slate-500 select-none'
+                className="px-3 py-2 text-sm text-slate-500 select-none"
               >
                 ...
               </span>
@@ -81,7 +86,7 @@ const Pagination = ({
           return isCurrent ? (
             <span
               key={pageNumber}
-              className='min-w-10 px-3 py-2 text-sm font-semibold rounded-lg bg-slate-800 text-white shadow-sm text-center'
+              className="min-w-10 px-3 py-2 text-sm font-semibold rounded-lg bg-slate-800 text-white shadow-sm text-center"
             >
               {pageNumber}
             </span>
@@ -89,8 +94,8 @@ const Pagination = ({
             <Link
               key={pageNumber}
               href={getPageUrl(pageNumber)}
-              className='min-w-10 px-3 py-2 text-sm font-medium rounded-lg text-center
-              text-slate-700 hover:bg-slate-100 bg-white border border-slate-200 transition-colors hover:border-slate-300'
+              className="min-w-10 px-3 py-2 text-sm font-medium rounded-lg text-center
+              text-slate-700 hover:bg-slate-100 bg-white border border-slate-200 transition-colors hover:border-slate-300"
             >
               {pageNumber}
             </Link>
@@ -99,8 +104,14 @@ const Pagination = ({
       </div>
 
       {/* Next */}
-      <PaginationButton href={currentPage < totalPages ? getPageUrl(currentPage + 1) : undefined} disabled={currentPage >= totalPages}>
-        <span className='hidden sm:inline'>Suivant </span><ChevronRight className='w-4 h-4' />
+      <PaginationButton
+        href={
+          currentPage < totalPages ? getPageUrl(currentPage + 1) : undefined
+        }
+        disabled={currentPage >= totalPages}
+      >
+        <span className="hidden sm:inline">Suivant </span>
+        <ChevronRight className="w-4 h-4" />
       </PaginationButton>
     </nav>
   );

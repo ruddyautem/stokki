@@ -184,7 +184,7 @@ const main = async () => {
 
   console.log(`✔ Rotated ${rotateCount} products for demo user ${demoUserId}`);
   console.log(
-    `  - ${zeroQty} items with quantity 0 (${percentage}% out of stock)`
+    `  - ${zeroQty} items with quantity 0 (${percentage}% out of stock)`,
   );
   console.log(`  - ${nonZeroQty} items with quantity 1-20`);
 };

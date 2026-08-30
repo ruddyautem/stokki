@@ -3,7 +3,9 @@ import { stackServerApp } from "@/stack/server";
 
 const getCurrentUser = async () => {
   const user = await stackServerApp.getUser();
-  !user && redirect("/login");
+  if (!user) {
+    redirect("/sign-in");
+  }
 
   return user;
 };

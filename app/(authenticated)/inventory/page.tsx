@@ -1,10 +1,10 @@
-import Pagination from "@/components/Pagination";
+import { Search } from "lucide-react";
 import InventoryTable from "@/components/InventoryTable";
 import PageLayout from "@/components/PageLayout";
+import Pagination from "@/components/Pagination";
 import getCurrentUser from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import DeleteProduct from "@/lib/products";
-import { Search } from "lucide-react";
 
 const Inventory = async ({
   searchParams,
@@ -51,31 +51,35 @@ const Inventory = async ({
 
   return (
     <PageLayout
-      title='Inventaire'
-      subtitle='Gérez vos produits et suivez les niveaux de stock'
+      title="Inventaire"
+      subtitle="Gérez vos produits et suivez les niveaux de stock"
       badge={
-        <div className='mt-2 inline-flex items-center gap-2 text-sm text-slate-500 bg-white px-4 py-1.5 rounded-full border border-slate-200'>
-          <span className='font-semibold text-slate-900'>{totalCount}</span>
+        <div className="mt-2 inline-flex items-center gap-2 text-sm text-slate-500 bg-white px-4 py-1.5 rounded-full border border-slate-200">
+          <span className="font-semibold text-slate-900">{totalCount}</span>
           <span>produit{totalCount !== 1 ? "s" : ""} au total</span>
         </div>
       }
     >
-      <div className='space-y-4 lg:space-y-6 pb-24 lg:pb-0'>
+      <div className="space-y-4 lg:space-y-6 pb-24 lg:pb-0">
         {/* Search */}
-        <div className='bg-white rounded-xl border border-slate-200 p-4 sm:p-6 shadow-sm'>
-          <form action='/inventory' className='flex flex-col sm:flex-row gap-3' method='GET'>
-            <div className='flex-1 relative'>
-              <Search className='absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400' />
+        <div className="bg-white rounded-xl border border-slate-200 p-4 sm:p-6 shadow-sm">
+          <form
+            action="/inventory"
+            className="flex flex-col sm:flex-row gap-3"
+            method="GET"
+          >
+            <div className="flex-1 relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
               <input
-                name='searchQuery'
+                name="searchQuery"
                 defaultValue={searchQuery}
-                placeholder='Rechercher un produit par nom...'
-                className='w-full pl-12 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-800 focus:border-transparent transition-all'
+                placeholder="Rechercher un produit par nom..."
+                className="w-full pl-12 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-800 focus:border-transparent transition-all"
               />
             </div>
             <button
-              type='submit'
-              className='px-8 py-3 bg-slate-800 text-white rounded-lg font-medium hover:bg-slate-900 transition-all shadow-sm hover:shadow-md cursor-pointer'
+              type="submit"
+              className="px-8 py-3 bg-slate-800 text-white rounded-lg font-medium hover:bg-slate-900 transition-all shadow-sm hover:shadow-md cursor-pointer"
             >
               Rechercher
             </button>
@@ -87,10 +91,10 @@ const Inventory = async ({
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className='bg-white rounded-xl border border-slate-200 p-4 sm:p-6 shadow-sm'>
+          <div className="bg-white rounded-xl border border-slate-200 p-4 sm:p-6 shadow-sm">
             <Pagination
               currentPage={page}
-              baseUrl='/inventory'
+              baseUrl="/inventory"
               searchParams={{ searchQuery, pageSize: String(pageSize) }}
               totalPages={totalPages}
             />

@@ -1,8 +1,8 @@
 "use client";
 
-import { X, AlertTriangle } from "lucide-react";
-import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+import { AlertTriangle, X } from "lucide-react";
 import { useEffect } from "react";
+import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -59,71 +59,71 @@ const ConfirmModal = ({
 
   return (
     <div
-      className='fixed inset-0 z-50 flex items-center justify-center p-4'
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
       onClick={handleBackdropClick}
       onKeyDown={handleBackdropKeyDown}
-      role='dialog'
-      aria-modal='true'
-      aria-labelledby='modal-title'
-      aria-describedby='modal-description'
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+      aria-describedby="modal-description"
     >
       {/* Backdrop */}
       <div
-        className='absolute inset-0 min-h-screen bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200'
-        aria-hidden='true'
+        className="absolute inset-0 min-h-screen bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200"
+        aria-hidden="true"
       />
 
       {/* Modal */}
-      <div className='relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in-95 duration-200'>
+      <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in-95 duration-200">
         {/* Close button */}
         <button
-          type='button'
+          type="button"
           onClick={onClose}
           disabled={isLoading}
-          className='absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors disabled:opacity-50'
-          aria-label='Fermer'
+          className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors disabled:opacity-50"
+          aria-label="Fermer"
         >
-          <X className='w-5 h-5' />
+          <X className="w-5 h-5" />
         </button>
 
         {/* Icon */}
         <div
-          className='flex items-center justify-center mb-4'
-          aria-hidden='true'
+          className="flex items-center justify-center mb-4"
+          aria-hidden="true"
         >
-          <div className='bg-red-100 rounded-full p-3'>
-            <AlertTriangle className='w-8 h-8 text-red-600' />
+          <div className="bg-red-100 rounded-full p-3">
+            <AlertTriangle className="w-8 h-8 text-red-600" />
           </div>
         </div>
 
         {/* Content */}
-        <div className='text-center mb-6'>
+        <div className="text-center mb-6">
           <h3
-            id='modal-title'
-            className='text-xl font-bold text-slate-900 mb-2'
+            id="modal-title"
+            className="text-xl font-bold text-slate-900 mb-2"
           >
             {title}
           </h3>
-          <p id='modal-description' className='text-slate-600'>
+          <p id="modal-description" className="text-slate-600">
             {message}
           </p>
         </div>
 
         {/* Actions */}
-        <div className='flex gap-3'>
+        <div className="flex gap-3">
           <button
             onClick={onClose}
             disabled={isLoading}
-            className='flex-1 px-4 py-3 bg-slate-100 text-slate-700 rounded-lg font-medium hover:bg-slate-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer'
-            type='button'
+            className="flex-1 px-4 py-3 bg-slate-100 text-slate-700 rounded-lg font-medium hover:bg-slate-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            type="button"
           >
             {cancelText}
           </button>
           <button
             onClick={onConfirm}
             disabled={isLoading}
-            className='flex-1 px-4 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md cursor-pointer'
-            type='button'
+            className="flex-1 px-4 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md cursor-pointer"
+            type="button"
           >
             {isLoading ? "Traitement..." : confirmText}
           </button>

@@ -1,8 +1,8 @@
-import type { Metadata } from "next";
 import { StackProvider, StackTheme } from "@stackframe/stack";
-import { stackClientApp } from "../stack/client";
+import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Bounce, ToastContainer } from "react-toastify";
+import { stackClientApp } from "../stack/client";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 
@@ -27,15 +27,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en'>
+    <html lang="fr">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <StackProvider app={stackClientApp} lang='fr-FR'>
+        <StackProvider app={stackClientApp} lang="fr-FR">
           <StackTheme>{children}</StackTheme>
         </StackProvider>
         <ToastContainer
-          position='bottom-center'
+          position="bottom-center"
           autoClose={3000}
           hideProgressBar={false}
           newestOnTop
@@ -44,7 +44,7 @@ export default function RootLayout({
           pauseOnFocusLoss
           draggable
           pauseOnHover
-          theme='light'
+          theme="light"
           transition={Bounce}
         />
       </body>

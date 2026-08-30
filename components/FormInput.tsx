@@ -17,16 +17,19 @@ const FormInput = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={props.id}
-            className='block text-sm font-semibold text-slate-900 mb-2'
+            className="block text-sm font-semibold text-slate-900 mb-2"
           >
-            {label}{" "}
-            {required && <span className='text-red-500'>*</span>}
+            {label} {required && <span className="text-red-500">*</span>}
             {optionalLabel && (
-              <span className='text-slate-400'>{optionalLabel}</span>
+              <span className="text-slate-400">{optionalLabel}</span>
             )}
           </label>
         )}
-        <input ref={ref} className={`${inputClasses} ${className || ""}`} {...props} />
+        <input
+          ref={ref}
+          className={`${inputClasses} ${className || ""}`}
+          {...props}
+        />
       </div>
     );
   },

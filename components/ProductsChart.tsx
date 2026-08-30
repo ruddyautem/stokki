@@ -27,8 +27,8 @@ const getDaysInMonth = (
 // Function to validate and fix invalid dates
 const fixInvalidDate = (dateStr: string) => {
   const [monthStr, dayStr] = dateStr.split("/");
-  let month = parseInt(monthStr);
-  let day = parseInt(dayStr);
+  let month = parseInt(monthStr, 10);
+  let day = parseInt(dayStr, 10);
   const year = new Date().getFullYear();
 
   // Check if day exceeds the month's maximum days
@@ -70,12 +70,12 @@ const ProductsChart = ({ data }: { data: ChartData[] }) => {
   }));
 
   // Custom Tooltip
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number }>; label?: string }) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-white border border-slate-200 rounded-xl shadow-lg p-3">
           <p className="text-slate-900 font-semibold text-sm mb-1">
-            {formatDateToFrench(label)}
+            {formatDateToFrench(label || "")}
           </p>
           <p className="text-emerald-600 text-sm font-medium">
             <span className="font-semibold">Produits:</span> {payload[0].value}
@@ -123,7 +123,10 @@ const ProductsChart = ({ data }: { data: ChartData[] }) => {
           dot={{ fill: "#059669", strokeWidth: 2, r: 3 }}
           activeDot={{ fill: "#059669", stroke: "#fff", strokeWidth: 2, r: 5 }}
         />
-        <Tooltip content={<CustomTooltip />} cursor={{ stroke: "#94a3b8", strokeWidth: 1 }} />
+        <Tooltip
+          content={<CustomTooltip />}
+          cursor={{ stroke: "#94a3b8", strokeWidth: 1 }}
+        />
       </AreaChart>
     </ResponsiveContainer>
   );

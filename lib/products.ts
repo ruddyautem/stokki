@@ -1,9 +1,9 @@
 "use server";
 
-import getCurrentUser from "./auth";
-import { prisma } from "./prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import getCurrentUser from "./auth";
+import { prisma } from "./prisma";
 
 const productSchema = z.object({
   name: z.string().min(1, "Product name is required"),
@@ -29,7 +29,7 @@ const DeleteProduct = async (formData: FormData) => {
 
 export const CreateProduct = async (formData: FormData) => {
   const user = await getCurrentUser();
-  
+
   const parsed = productSchema.safeParse({
     name: formData.get("name"),
     price: formData.get("price"),
