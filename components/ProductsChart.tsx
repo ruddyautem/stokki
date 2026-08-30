@@ -70,7 +70,15 @@ const ProductsChart = ({ data }: { data: ChartData[] }) => {
   }));
 
   // Custom Tooltip
-  const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number }>; label?: string }) => {
+  const CustomTooltip = ({
+    active,
+    payload,
+    label,
+  }: {
+    active?: boolean;
+    payload?: Array<{ value: number }>;
+    label?: string;
+  }) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-white border border-slate-200 rounded-xl shadow-lg p-3">

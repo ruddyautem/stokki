@@ -12,9 +12,9 @@ const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   // Close sidebar on route change (mobile)
+  // biome-ignore lint/correctness/useExhaustiveDependencies: we intentionally want to trigger on pathname change
   useEffect(() => {
     setIsOpen(false);
-    // biome-ignore lint/correctness/useExhaustiveDependencies: we intentionally want to trigger on pathname change
   }, [pathname]);
 
   // Lock body scroll when sidebar is open on mobile

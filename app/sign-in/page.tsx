@@ -1,11 +1,15 @@
 "use client";
 
-import { SignIn } from "@stackframe/stack";
+import { SignIn, useStackApp } from "@stackframe/stack";
 import { ArrowLeft, Blocks, Copy, User } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
 const SignInPage = () => {
+  const app = useStackApp();
+  const router = useRouter();
+
   const copyToClipboard = (text: string, type: string) => {
     navigator.clipboard.writeText(text);
     toast.success(`${type === "email" ? "Email" : "Mot de passe"} copié !`, {
@@ -56,9 +60,50 @@ const SignInPage = () => {
                 Compte de démonstration
               </h3>
               <p className="text-xs text-slate-300">
-                Copiez ces identifiants pour tester l'application
+                Copiez ces identifiants ou connectez-vous directement
               </p>
             </div>
+          </div>
+
+          <div className="mb-4">
+            <button
+              type="button"
+              onClick={async () => {
+                const toastId = toast.loading("Connexion en cours...");
+                try {
+                  const result = await app.signInWithCredential({
+                    email: "test@test.com",
+                    password: "test123456",
+                  });
+                  if (result.status === "error") {
+                    toast.update(toastId, {
+                      render: "Erreur de connexion",
+                      type: "error",
+                      isLoading: false,
+                      autoClose: 3000,
+                    });
+                  } else {
+                    toast.update(toastId, {
+                      render: "Connexion réussie !",
+                      type: "success",
+                      isLoading: false,
+                      autoClose: 2000,
+                    });
+                    router.push("/dashboard");
+                  }
+                } catch (e) {
+                  toast.update(toastId, {
+                    render: "Erreur de connexion",
+                    type: "error",
+                    isLoading: false,
+                    autoClose: 3000,
+                  });
+                }
+              }}
+              className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 px-4 rounded-lg transition-colors cursor-pointer shadow-md"
+            >
+              Connexion en un clic
+            </button>
           </div>
 
           <div className="space-y-3">

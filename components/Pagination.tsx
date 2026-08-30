@@ -70,7 +70,6 @@ const Pagination = ({
         {visiblePages.map((page, index) => {
           if (page === "...") {
             return (
-              // biome-ignore lint/suspicious/noArrayIndexKey: dots can appear multiple times
               <span
                 key={`dots-${index}`}
                 className="px-3 py-2 text-sm text-slate-500 select-none"
