@@ -1,7 +1,9 @@
 # Stokki
 
 <div align="center">
+
 **[Français](#francais)** · **[English](#english)**
+
 </div>
 
 ---
