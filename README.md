@@ -1,11 +1,12 @@
 # Stokki
 
 <div align="center">
-**[Français](#français)** · **[English](#english)**
+**[Français](#francais)** · **[English](#english)**
 </div>
 
 ---
 
+<a id="francais"></a>
 ## Français
 
 ### 📋 Présentation
@@ -88,6 +89,7 @@ Direction [http://localhost:3000](http://localhost:3000).
 
 ---
 
+<a id="english"></a>
 ## English
 
 ### 📋 Overview
