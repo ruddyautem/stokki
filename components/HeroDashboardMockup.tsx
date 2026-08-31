@@ -1,14 +1,14 @@
 import {
-  Package,
   AlertTriangle,
-  XCircle,
-  LayoutDashboard,
-  Box,
-  Truck,
-  Settings,
+  Blocks,
+  ChevronUp,
   DollarSign,
-  TrendingUp,
   Menu,
+  Package,
+  Plus,
+  Settings,
+  TrendingUp,
+  XCircle,
 } from "lucide-react";
 import ProductsChart from "./ProductsChart";
 
@@ -40,57 +40,64 @@ export default function HeroDashboardMockup() {
 
         <div className="flex-1 flex overflow-hidden">
           {/* Sidebar */}
-          <div className="hidden md:flex flex-col w-56 xl:w-72 border-r border-slate-200 bg-white pt-4 pb-4 px-3 xl:px-5 shrink-0">
-            <div className="flex items-center gap-2 px-2 mb-6 xl:mb-10 shrink-0">
-              <Package className="w-5 h-5 xl:w-6 xl:h-6 text-slate-900" />
-              <span className="font-semibold text-sm xl:text-base tracking-tight">
+          <div className="hidden md:flex flex-col w-56 xl:w-64 border-r border-slate-200 bg-white pt-4 pb-0 px-4 shrink-0">
+            <div className="flex items-center gap-3 mb-6 xl:mb-10 px-2 shrink-0">
+              <div className="bg-linear-to-br from-slate-700 to-slate-900 rounded-lg p-1.5 xl:p-2 shadow-md">
+                <Blocks className="w-4 h-4 xl:w-5 xl:h-5 text-white" />
+              </div>
+              <span className="text-lg xl:text-xl font-bold text-slate-900 block">
                 Stokki
               </span>
             </div>
 
-            <div className="flex flex-col gap-1 xl:gap-1.5 overflow-hidden xl:overflow-y-auto min-h-0">
-              <div className="text-[10px] xl:text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1 xl:mb-2 ml-2 shrink-0">
+            <div className="flex flex-col gap-1 overflow-hidden xl:overflow-y-auto min-h-0">
+              <div className="text-[10px] xl:text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 xl:mb-3 px-3 shrink-0">
                 Menu
               </div>
-              <div className="w-full bg-slate-100 text-slate-900 rounded-md flex items-center px-2.5 xl:px-4 py-2 xl:py-3 gap-2 xl:gap-3 shrink-0">
-                <LayoutDashboard className="w-4 h-4 xl:w-5 xl:h-5 text-slate-700 shrink-0" />
+
+              <div className="flex items-center space-x-3 py-2.5 xl:py-3 rounded-xl px-3 transition-all bg-slate-900 text-white shadow-md shrink-0">
+                <Blocks className="w-4 h-4 xl:w-5 xl:h-5 text-white shrink-0" />
                 <span className="text-xs xl:text-sm font-medium">
                   Tableau de bord
                 </span>
               </div>
-              <div className="w-full rounded-md flex items-center px-2.5 xl:px-4 py-2 xl:py-3 gap-2 xl:gap-3 shrink-0 text-slate-500 hover:bg-slate-50 transition-colors">
-                <Box className="w-4 h-4 xl:w-5 xl:h-5 shrink-0" />
+
+              <div className="flex items-center space-x-3 py-2.5 xl:py-3 rounded-xl px-3 transition-all text-slate-600 hover:bg-slate-50 shrink-0">
+                <Package className="w-4 h-4 xl:w-5 xl:h-5 text-slate-400 shrink-0" />
                 <span className="text-xs xl:text-sm font-medium">
                   Inventaire
                 </span>
               </div>
-              <div className="w-full rounded-md flex items-center px-2.5 xl:px-4 py-2 xl:py-3 gap-2 xl:gap-3 shrink-0 text-slate-500 hover:bg-slate-50 transition-colors">
-                <Truck className="w-4 h-4 xl:w-5 xl:h-5 shrink-0" />
+
+              <div className="flex items-center space-x-3 py-2.5 xl:py-3 rounded-xl px-3 transition-all text-slate-600 hover:bg-slate-50 shrink-0">
+                <Plus className="w-4 h-4 xl:w-5 xl:h-5 text-slate-400 shrink-0" />
                 <span className="text-xs xl:text-sm font-medium">
-                  Fournisseurs
+                  Ajouter produit
                 </span>
               </div>
-            </div>
 
-            <div className="mt-auto flex flex-col gap-1 border-t border-slate-100 pt-3 xl:pt-4">
-              <div className="w-full rounded-md flex items-center px-2.5 xl:px-4 py-2 xl:py-3 gap-2 xl:gap-3 shrink-0 text-slate-500 hover:bg-slate-50 transition-colors">
-                <Settings className="w-4 h-4 xl:w-5 xl:h-5 shrink-0" />
+              <div className="flex items-center space-x-3 py-2.5 xl:py-3 rounded-xl px-3 transition-all text-slate-600 hover:bg-slate-50 shrink-0">
+                <Settings className="w-4 h-4 xl:w-5 xl:h-5 text-slate-400 shrink-0" />
                 <span className="text-xs xl:text-sm font-medium">
                   Paramètres
                 </span>
               </div>
-              <div className="flex items-center gap-2 xl:gap-3 px-2 pt-2 shrink-0">
-                <div className="h-6 w-6 xl:h-8 xl:w-8 rounded-full bg-slate-200 shrink-0 flex items-center justify-center text-[10px] xl:text-xs font-bold text-slate-600">
-                  TU
+            </div>
+
+            <div className="mt-auto -mx-4 px-4 py-1.5 border-t border-slate-200 bg-white shrink-0">
+              <div className="flex items-center w-full gap-3 p-2 -mx-2 rounded-lg text-left opacity-90 grayscale shrink-0">
+                <div className="shrink-0 w-6 h-6 xl:w-8 xl:h-8 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden text-[10px] xl:text-xs font-bold text-slate-600 uppercase">
+                  UT
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] xl:text-xs font-semibold text-slate-700">
-                    Test User
-                  </span>
-                  <span className="text-[9px] xl:text-[10px] text-slate-400">
-                    Admin
-                  </span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] xl:text-sm font-semibold text-slate-700 truncate">
+                    Utilisateur Test
+                  </p>
+                  <p className="text-[9px] xl:text-xs text-slate-500 truncate">
+                    test@test.com
+                  </p>
                 </div>
+                <ChevronUp className="w-3 h-3 xl:w-4 xl:h-4 text-slate-400 shrink-0" />
               </div>
             </div>
           </div>

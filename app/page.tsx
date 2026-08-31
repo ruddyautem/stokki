@@ -65,7 +65,7 @@ export default function Home() {
 
         {/* Minimal Dashboard Preview */}
         <section
-          className="w-full max-w-7xl mx-auto relative mt-4 md:mt-0 aspect-square sm:aspect-[4/3] md:aspect-[16/10] lg:aspect-[16/9] min-h-[400px]"
+          className="w-full max-w-7xl mx-auto relative mt-4 md:mt-0 aspect-square sm:aspect-4/3 md:aspect-16/10 lg:aspect-video min-h-[400px]"
           id="demo"
         >
           <HeroDashboardMockup />

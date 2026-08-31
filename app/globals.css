@@ -7,3 +7,12 @@ body {
 html {
   scroll-behavior: smooth;
 }
+
+.stack-settings-override [class*="max-w-[200px]"] {
+  max-width: 300px !important;
+  min-width: 300px !important;
+}
+
+.stack-settings-override [class*="overflow-y-auto"] {
+  overflow-y: visible !important;
+}

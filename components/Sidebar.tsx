@@ -1,11 +1,82 @@
 "use client";
 
-import { UserButton } from "@stackframe/stack";
-import { Blocks, Menu, Package, Plus, Settings, X } from "lucide-react";
+import { useUser } from "@stackframe/stack";
+import {
+  Blocks,
+  ChevronUp,
+  LogOut,
+  Menu,
+  Package,
+  Plus,
+  Settings,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState, useRef } from "react";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+
+function UserMenu() {
+  const user = useUser();
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowUserMenu(false);
+      }
+    }
+
+    if (showUserMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showUserMenu]);
+
+  return (
+    <div className="absolute bottom-0 left-0 right-0 px-4 py-1.5 border-t border-slate-200 bg-white">
+      <div className="relative" ref={menuRef}>
+        {showUserMenu && (
+          <div className="absolute bottom-full left-0 mb-2 w-full bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-60">
+            <button
+              type="button"
+              onClick={() => user?.signOut()}
+              className="w-full text-left px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-slate-50 flex items-center gap-2 transition-colors cursor-pointer"
+            >
+              <LogOut className="w-4 h-4" />
+              Se déconnecter
+            </button>
+          </div>
+        )}
+        <button
+          type="button"
+          onClick={() => setShowUserMenu(!showUserMenu)}
+          className="flex items-center w-full gap-3 p-2 -mx-2 rounded-lg hover:bg-slate-50 transition-colors text-left cursor-pointer"
+        >
+          <div className="shrink-0 w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden text-xs font-bold text-slate-600 uppercase">
+            {user?.primaryEmail?.charAt(0) || "U"}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-slate-700 truncate">
+              {user?.displayName || "Utilisateur"}
+            </p>
+            <p className="text-xs text-slate-500 truncate">
+              {user?.primaryEmail}
+            </p>
+          </div>
+          <ChevronUp
+            className={`w-4 h-4 text-slate-400 transition-transform ${
+              showUserMenu ? "rotate-180" : ""
+            }`}
+          />
+        </button>
+      </div>
+    </div>
+  );
+}
 
 const Sidebar = () => {
   const pathname = usePathname();
@@ -49,30 +120,33 @@ const Sidebar = () => {
       )}
 
       <div
-        className={`fixed lg:relative left-0 top-0 h-dvh lg:h-full flex flex-col bg-white border-r border-slate-200 z-40 transition-transform duration-300 ease-in-out shadow-sm ${
+        className={`fixed left-0 top-0 h-screen bg-white border-r border-slate-200 z-40 transition-transform duration-300 ease-in-out shadow-sm ${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 w-64 lg:shrink-0 pt-4 px-4 pb-4`}
+        } lg:translate-x-0 w-64 min-h-screen p-4`}
       >
-        <div className="flex items-center justify-between mb-8 px-2">
-          <div className="flex items-center space-x-3">
-            <div className="bg-linear-to-br from-slate-700 to-slate-900 rounded-lg p-2 shadow-md hidden lg:block">
-              <Blocks className="h-5 w-5 text-white " />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-bold text-slate-900 block ml-10 lg:ml-0">
-                Stokki
-              </span>
-            </div>
-          </div>
-
+        {/* Mobile close button */}
+        <div className="flex justify-end lg:hidden mb-2">
           <button
             type="button"
             onClick={() => setIsOpen(false)}
-            className="lg:hidden p-2 -mr-2 rounded-lg hover:bg-slate-100 transition-colors"
+            className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
             aria-label="Fermer le menu"
           >
             <X className="w-5 h-5 text-slate-600" />
           </button>
+        </div>
+
+        <div className="mb-8 px-2">
+          <div className="flex items-center space-x-3 mb-6">
+            <div className="bg-linear-to-br from-slate-700 to-slate-900 rounded-lg p-2 shadow-md">
+              <Blocks className="h-5 w-5 text-white" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xl font-bold text-slate-900 block">
+                Stokki
+              </span>
+            </div>
+          </div>
         </div>
 
         <nav className="space-y-1">
@@ -102,9 +176,13 @@ const Sidebar = () => {
           })}
         </nav>
 
-        <div className="mt-auto -mx-4 -mb-4 p-4 border-t border-slate-200 bg-white">
-          <UserButton showUserInfo />
-        </div>
+        <Suspense
+          fallback={
+            <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200 bg-white min-h-[73px]" />
+          }
+        >
+          <UserMenu />
+        </Suspense>
       </div>
     </>
   );

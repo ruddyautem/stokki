@@ -18,7 +18,7 @@ const Settings = async () => {
       subtitle="Gérez les paramètres de votre compte et vos préférences"
     >
       <div className="max-w-5xl mx-auto">
-        <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-6 lg:p-10 shadow-sm overflow-x-auto">
+        <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-6 lg:p-10 shadow-sm overflow-x-auto h-180 overflow-y-hidden stack-settings-override">
           <AccountSettings fullPage />
         </div>
       </div>
