@@ -18,7 +18,7 @@ Bienvenue sur le code source de **Stokki**. J'avais besoin d'une solution simple
 
 | Route | Ce qu'on y trouve |
 | --- | --- |
-| `/` (Accueil) | Une landing page avec un héro clair, et un aperçu grandeur nature (skeleton) du tableau de bord. |
+| `/` (Accueil) | Une landing page minimaliste avec un aperçu dynamique du tableau de bord. |
 | `/sign-in` | Page d'authentification personnalisée et sécurisée via Stack Auth (inclut un accès direct via un compte de test). |
 | `/dashboard` | Le tableau de bord principal. Statistiques clés, produits en rupture de stock, graphique des entrées/sorties (via Recharts). |
 | `/inventory` | L'inventaire complet de vos produits, avec pagination et gestion de l'état des stocks. |
@@ -57,7 +57,7 @@ stokki/
 │   └── page.tsx                 # Landing page
 ├── components/                  # Composants UI réutilisables
 │   ├── Footer.tsx
-│   ├── HeroDashboardSkeleton.tsx# Aperçu de l'app sur l'accueil
+│   ├── HeroDashboardMockup.tsx  # Aperçu du tableau de bord sur l'écran d'accueil
 │   ├── Pagination.tsx
 │   ├── ProductsChart.tsx        # Graphique Recharts
 │   └── Sidebar.tsx              # Menu de navigation latéral
@@ -101,7 +101,7 @@ Welcome to the source code of **Stokki**. I needed a simple, clean, and fast sol
 
 | Route | What's there |
 | --- | --- |
-| `/` (Home) | A landing page with a clear hero section, and a full-scale mockup (skeleton) of the dashboard. |
+| `/` (Home) | A minimalist landing page featuring a dynamic preview mockup of the dashboard. |
 | `/sign-in` | Custom, secure authentication page powered by Stack Auth (includes 1-click test account access). |
 | `/dashboard` | The main dashboard. Key metrics, out-of-stock warnings, and an input/output chart (via Recharts). |
 | `/inventory` | The complete inventory list with pagination and stock status management. |
@@ -141,7 +141,7 @@ stokki/
 │   └── page.tsx                 # Landing page
 ├── components/                  # Reusable UI components
 │   ├── Footer.tsx
-│   ├── HeroDashboardSkeleton.tsx# Full-scale app preview on home
+│   ├── HeroDashboardMockup.tsx  # Realistic dashboard preview on homepage
 │   ├── Pagination.tsx
 │   ├── ProductsChart.tsx        # Recharts graph
 │   └── Sidebar.tsx              # Main lateral navigation menu

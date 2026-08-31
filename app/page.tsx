@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Footer from "@/components/Footer";
-import HeroDashboardSkeleton from "@/components/HeroDashboardSkeleton";
+import HeroDashboardMockup from "@/components/HeroDashboardMockup";
 
 export default function Home() {
   const user = useUser();
@@ -29,7 +29,7 @@ export default function Home() {
         <div className="flex items-center gap-2">
           <Blocks className="w-5 h-5 text-slate-900" />
           <span className="font-semibold text-lg tracking-tight text-slate-900">
-            Stokki.
+            Stokki
           </span>
         </div>
 
@@ -40,9 +40,9 @@ export default function Home() {
           Connexion
         </Link>
       </header>
-      <main className="flex-1 flex flex-col w-full min-h-0 pt-4 md:pt-6 pb-6 px-4 md:px-8">
+      <main className="flex-1 flex flex-col w-full pt-4 md:pt-6 pb-6 px-4 md:px-8">
         {/* Hero Text */}
-        <section className="w-full max-w-4xl mx-auto flex flex-col items-center text-center shrink-0 mb-2 md:mb-8 mt-2 md:mt-6">
+        <section className="w-full max-w-4xl mx-auto flex flex-col items-center text-center shrink-0 mb-8 md:mb-12 mt-2 md:mt-6">
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-semibold tracking-tighter text-slate-900 leading-[1.1] mb-4">
             Gérez vos stocks <br className="hidden sm:block" />
             <span className="text-slate-500">avec précision.</span>
@@ -63,12 +63,12 @@ export default function Home() {
           </Link>
         </section>
 
-        {/* Minimal Dashboard Preview (Fills remaining height) */}
+        {/* Minimal Dashboard Preview */}
         <section
-          className="w-full max-w-7xl mx-auto flex-1 flex flex-col min-h-0 relative mt-4 md:mt-0"
+          className="w-full max-w-7xl mx-auto relative mt-4 md:mt-0 aspect-square sm:aspect-[4/3] md:aspect-[16/10] lg:aspect-[16/9] min-h-[400px]"
           id="demo"
         >
-          <HeroDashboardSkeleton />
+          <HeroDashboardMockup />
         </section>
       </main>
       <Footer />
