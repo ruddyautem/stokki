@@ -40,7 +40,7 @@ function UserMenu() {
     <div className="absolute bottom-0 left-0 right-0 px-4 py-1.5 border-t border-slate-200 bg-white">
       <div className="relative" ref={menuRef}>
         {showUserMenu && (
-          <div className="absolute bottom-full left-0 mb-2 w-full bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-60">
+          <div className="absolute bottom-full left-0 mb-2 w-full bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-50">
             <button
               type="button"
               onClick={() => user?.signOut()}
@@ -104,7 +104,7 @@ const Sidebar = () => {
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="fixed top-3 left-3 z-60 bg-white/90 backdrop-blur-md border border-slate-200 rounded-xl p-2.5 shadow-lg lg:hidden hover:bg-white hover:shadow-xl active:scale-95 transition-all cursor-pointer"
+        className="fixed top-3 left-3 z-50 bg-white/90 backdrop-blur-md border border-slate-200 rounded-xl p-2.5 shadow-lg lg:hidden hover:bg-white hover:shadow-xl active:scale-95 transition-all cursor-pointer"
         aria-label="Ouvrir le menu"
       >
         <Menu className="w-5 h-5 text-slate-800" />
@@ -120,12 +120,12 @@ const Sidebar = () => {
       )}
 
       <div
-        className={`fixed left-0 top-0 h-screen bg-white border-r border-slate-200 z-40 transition-transform duration-300 ease-in-out shadow-sm ${
+        className={`fixed left-0 top-0 h-dvh bg-white border-r border-slate-200 z-50 transition-transform duration-300 ease-in-out shadow-sm flex flex-col ${
           isOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 w-64 min-h-screen p-4`}
+        } lg:translate-x-0 w-64 p-4 pb-0`}
       >
         {/* Mobile close button */}
-        <div className="flex justify-end lg:hidden mb-2">
+        <div className="flex justify-end lg:hidden mb-2 shrink-0">
           <button
             type="button"
             onClick={() => setIsOpen(false)}
