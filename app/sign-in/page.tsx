@@ -1,140 +1,172 @@
 "use client";
 
 import { SignIn, useStackApp } from "@stackframe/stack";
-import { ArrowLeft, Blocks, User } from "lucide-react";
+import { ArrowLeft, Blocks } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
+import { useEffect } from "react";
+import { toast } from "sonner";
 import Footer from "@/components/Footer";
+import LanguageToggle from "@/components/LanguageToggle";
+import ThemeToggle from "@/components/ThemeToggle";
+import { useLanguage } from "@/context/LanguageContext";
 
 const SignInPage = () => {
   const app = useStackApp();
   const router = useRouter();
+  const { t, language } = useLanguage();
 
-  const _copyToClipboard = (text: string, type: string) => {
-    navigator.clipboard.writeText(text);
-    toast.success(`${type === "email" ? "Email" : "Mot de passe"} copié !`, {
-      autoClose: 2000,
-    });
-  };
+  // Localize Stack Auth's hardcoded "last" badge in OAuth buttons
+  useEffect(() => {
+    const updateLastBadge = () => {
+      const badges = document.querySelectorAll(
+        ".stack-scope button span.absolute",
+      );
+      badges.forEach((el) => {
+        const text = el.textContent?.trim().toLowerCase();
+        if (
+          text === "last" ||
+          text === "last used" ||
+          text === "dernier" ||
+          text === "dernier utilisé" ||
+          el.hasAttribute("data-last-badge")
+        ) {
+          el.setAttribute("data-last-badge", "true");
+          const targetText = language === "fr" ? t.auth.lastUsed : "Last used";
+          if (el.textContent !== targetText) {
+            el.textContent = targetText;
+          }
+          el.setAttribute("aria-label", targetText);
+        }
+      });
+    };
+
+    updateLastBadge();
+    const observer = new MutationObserver(updateLastBadge);
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [language, t.auth.lastUsed]);
 
   return (
-    <div className="flex-1 flex flex-col min-h-0">
-      <div className="flex-1 overflow-auto bg-linear-to-br from-slate-100 via-slate-50 to-slate-100 flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
+    <div className="flex-1 flex flex-col min-h-dvh sm:min-h-0 justify-between relative">
+      {/* Theme & Language Toggles in top right */}
+      <div className="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 flex items-center gap-2">
+        <ThemeToggle />
+        <LanguageToggle />
+      </div>
+
+      <div className="flex-1 flex items-center justify-center p-3 sm:p-6 bg-linear-to-br from-slate-100 via-slate-50 to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 transition-colors">
+        <div className="w-full max-w-md my-auto">
           {/* Logo Header */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-3 sm:mb-6">
             <Link
               href="/"
-              className="inline-flex items-center space-x-3 mb-6 hover:opacity-80 transition-opacity"
+              className="inline-flex items-center space-x-2 sm:space-x-3 mb-1 sm:mb-4 hover:opacity-80 transition-opacity"
             >
-              <div className="bg-linear-to-br from-slate-700 to-slate-900 rounded-lg p-2 shadow-md">
-                <Blocks className="h-5 w-5 text-white" />
+              <div className="bg-linear-to-br from-indigo-600 to-indigo-700 rounded-lg p-1.5 sm:p-2 shadow-md">
+                <Blocks className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
               </div>
               <div className="text-left flex flex-col">
-                <span className="text-xl font-bold text-slate-900 block">
+                <span className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white block leading-tight">
                   Stokki
                 </span>
-                <span className="text-xs text-slate-500">Inventaire</span>
+                <span className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">
+                  {t.nav.inventory}
+                </span>
               </div>
             </Link>
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">
-              Content de vous revoir
+            <h1 className="text-xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-0.5 sm:mb-1">
+              {t.auth.welcomeBack}
             </h1>
-            <p className="text-slate-600">
-              Connectez-vous pour accéder à votre tableau de bord
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+              {t.auth.signInSubtitle}
             </p>
           </div>
 
           {/* Sign In Form Card */}
-          <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8 mb-4">
+          <div className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl shadow-md sm:shadow-xl border border-slate-200 dark:border-slate-800 p-4 sm:p-8 mb-2.5 sm:mb-4 transition-colors">
             <SignIn />
           </div>
 
           {/* Test Account Credentials */}
-          <div className="bg-linear-to-br from-slate-800 to-slate-900 rounded-xl border border-slate-700 p-5 mb-6 shadow-lg">
-            <div className="flex items-start gap-3 mb-4">
-              <div className="bg-slate-700 rounded-lg p-2 mt-0.5">
-                <User className="w-4 h-4 text-white" />
+          <div className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl shadow-md sm:shadow-xl border border-slate-200 dark:border-slate-800 p-4 sm:p-8 mb-2.5 sm:mb-4 transition-colors">
+            <div className="w-full max-w-[380px] mx-auto">
+              <div className="flex items-center justify-center mb-3 sm:mb-4">
+                <div className="inline-flex items-center justify-center px-3 py-1 sm:py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700">
+                  <h3 className="font-semibold text-slate-700 dark:text-slate-200 text-xs sm:text-sm text-center">
+                    {t.auth.demoAccount}
+                  </h3>
+                </div>
               </div>
-              <div className="flex-1">
-                <h3 className="font-semibold text-white text-sm mb-1">
-                  Compte de démonstration
-                </h3>
-                <p className="text-xs text-slate-300">
-                  Connectez-vous directement au compte de démonstration
-                </p>
-              </div>
-            </div>
 
-            <div className="mb-4">
-              <button
-                type="button"
-                onClick={async () => {
-                  const toastId = toast.loading("Connexion en cours...");
-                  try {
-                    const result = await app.signInWithCredential({
-                      email: "test@test.com",
-                      password: "test123456",
-                    });
-                    if (result.status === "error") {
-                      toast.update(toastId, {
-                        render: "Erreur de connexion",
-                        type: "error",
-                        isLoading: false,
-                        autoClose: 3000,
+              <div>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const toastId = toast.loading(t.auth.loggingIn);
+                    try {
+                      const result = await app.signInWithCredential({
+                        email: "test@test.com",
+                        password: "test123456",
                       });
-                    } else {
-                      toast.update(toastId, {
-                        render: "Connexion réussie !",
-                        type: "success",
-                        isLoading: false,
-                        autoClose: 2000,
-                      });
-                      router.push("/dashboard");
+                      if (result.status === "error") {
+                        toast.error(t.auth.loginError, { id: toastId });
+                      } else {
+                        toast.success(t.auth.loginSuccess, { id: toastId });
+                        router.push("/dashboard");
+                      }
+                    } catch (_e) {
+                      toast.error(t.auth.loginError, { id: toastId });
                     }
-                  } catch (_e) {
-                    toast.update(toastId, {
-                      render: "Erreur de connexion",
-                      type: "error",
-                      isLoading: false,
-                      autoClose: 3000,
-                    });
-                  }
-                }}
-                className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 px-4 rounded-lg transition-colors cursor-pointer shadow-md"
-              >
-                Connexion en un clic
-              </button>
+                  }}
+                  className="relative w-full h-9 sm:h-9.5 flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-medium px-4 rounded-lg text-xs sm:text-sm transition-all cursor-pointer shadow-sm hover:shadow-md hover:shadow-indigo-500/20 active:scale-[0.99]"
+                >
+                  <div className="absolute left-3.5 sm:left-4 flex items-center pointer-events-none">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-white"
+                      aria-hidden="true"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <span>{t.auth.oneClickLogin}</span>
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Back to Home Link */}
-          <div className="text-center mb-4">
+          {/* Back to Home & Sign Up */}
+          <div className="flex items-center justify-between text-xs sm:text-sm text-slate-600 dark:text-slate-400 px-1">
             <Link
               href="/"
-              className="inline-flex items-center space-x-2 text-slate-600 hover:text-slate-900 font-medium transition-colors text-sm"
+              className="inline-flex items-center gap-1 hover:text-slate-900 dark:hover:text-white transition-colors"
             >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Retour à l'accueil</span>
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>{t.auth.home}</span>
             </Link>
-          </div>
 
-          {/* Additional Info */}
-          <div className="text-center">
-            <p className="text-sm text-slate-600">
-              Pas encore de compte ?{" "}
+            <div>
+              {t.auth.noAccount}{" "}
               <Link
                 href="/sign-up"
-                className="text-slate-900 font-semibold hover:underline"
+                className="text-slate-900 dark:text-indigo-400 font-semibold hover:underline"
               >
-                Créer un compte
+                {t.auth.createAccount}
               </Link>
-            </p>
+            </div>
           </div>
         </div>
       </div>
-      <Footer />
+      <div className="hidden sm:block">
+        <Footer />
+      </div>
     </div>
   );
 };

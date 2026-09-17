@@ -56,8 +56,11 @@ const formatDateToFrench = (dateStr: string) => {
   return `${day}/${month}`;
 };
 
+import { useLanguage } from "@/context/LanguageContext";
+
 const ProductsChart = ({ data }: { data: ChartData[] }) => {
   const [isMounted, setIsMounted] = useState(false);
+  const { language } = useLanguage();
 
   useEffect(() => {
     setIsMounted(true);
@@ -69,6 +72,11 @@ const ProductsChart = ({ data }: { data: ChartData[] }) => {
     week: fixInvalidDate(item.week),
   }));
 
+  const formatTick = (dateStr: string) => {
+    // Both fr-FR and en-GB use DD/MM
+    return formatDateToFrench(dateStr);
+  };
+
   // Custom Tooltip
   const CustomTooltip = ({
     active,
@@ -79,14 +87,17 @@ const ProductsChart = ({ data }: { data: ChartData[] }) => {
     payload?: Array<{ value: number }>;
     label?: string;
   }) => {
-    if (active && payload && payload.length) {
+    if (active && payload?.length) {
       return (
-        <div className="bg-white border border-slate-200 rounded-xl shadow-lg p-3">
-          <p className="text-slate-900 font-semibold text-sm mb-1">
-            {formatDateToFrench(label || "")}
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg p-3">
+          <p className="text-slate-900 dark:text-slate-100 font-semibold text-sm mb-1">
+            {formatTick(label || "")}
           </p>
-          <p className="text-emerald-600 text-sm font-medium">
-            <span className="font-semibold">Produits:</span> {payload[0].value}
+          <p className="text-emerald-600 dark:text-emerald-400 text-sm font-medium">
+            <span className="font-semibold">
+              {language === "en" ? "Products:" : "Produits:"}
+            </span>{" "}
+            {payload[0].value}
           </p>
         </div>
       );
@@ -99,7 +110,12 @@ const ProductsChart = ({ data }: { data: ChartData[] }) => {
   }
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer
+      width="100%"
+      height="100%"
+      minWidth={0}
+      minHeight={100}
+    >
       <AreaChart
         data={cleanedData}
         margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
@@ -111,14 +127,18 @@ const ProductsChart = ({ data }: { data: ChartData[] }) => {
             <stop offset="95%" stopColor="#10b981" stopOpacity={0.05} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+        <CartesianGrid
+          strokeDasharray="3 3"
+          stroke="#94a3b8"
+          strokeOpacity={0.25}
+        />
         <XAxis
           dataKey="week"
-          stroke="#64748b"
+          stroke="#94a3b8"
           fontSize={12}
           tickLine={false}
           axisLine={false}
-          tickFormatter={formatDateToFrench}
+          tickFormatter={formatTick}
           style={{ fontWeight: 500 }}
         />
         <YAxis hide />

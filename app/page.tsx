@@ -7,10 +7,14 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Footer from "@/components/Footer";
 import HeroDashboardMockup from "@/components/HeroDashboardMockup";
+import LanguageToggle from "@/components/LanguageToggle";
+import ThemeToggle from "@/components/ThemeToggle";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Home() {
   const user = useUser();
   const router = useRouter();
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (user) {
@@ -25,49 +29,52 @@ export default function Home() {
   return (
     <>
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 px-6 h-16 flex items-center justify-between shrink-0">
+      <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 h-14 sm:h-15 flex items-center justify-between shrink-0 transition-colors">
         <div className="flex items-center gap-2">
-          <Blocks className="w-5 h-5 text-slate-900" />
-          <span className="font-semibold text-lg tracking-tight text-slate-900">
+          <div className="bg-linear-to-br from-indigo-600 to-indigo-700 rounded-lg p-1.5 shadow-xs">
+            <Blocks className="w-4 h-4 text-white" />
+          </div>
+          <span className="font-semibold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white">
             Stokki
           </span>
         </div>
 
-        <Link
-          href="/sign-in"
-          className="flex items-center justify-center gap-2 bg-slate-800 text-white px-6 py-3 rounded-md text-sm font-medium hover:bg-slate-700 transition-colors shadow-sm"
-        >
-          Connexion
-        </Link>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <ThemeToggle />
+          <LanguageToggle />
+          <Link
+            href="/sign-in"
+            className="flex items-center justify-center gap-2 bg-indigo-600 text-white px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
+          >
+            {t.nav.login}
+          </Link>
+        </div>
       </header>
-      <main className="flex-1 flex flex-col w-full pt-4 md:pt-6 pb-6 px-4 md:px-8">
+      <main className="flex-1 flex flex-col justify-center items-center w-full pt-2 sm:pt-3 2xl:pt-4 pb-2 sm:pb-3 px-3 sm:px-6 lg:px-8 max-w-[1600px] mx-auto min-h-0">
         {/* Hero Text */}
-        <section className="w-full max-w-4xl mx-auto flex flex-col items-center text-center shrink-0 mb-8 md:mb-12 mt-2 md:mt-6">
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-semibold tracking-tighter text-slate-900 leading-[1.1] mb-4">
-            Gérez vos stocks <br className="hidden sm:block" />
-            <span className="text-slate-500">avec précision.</span>
+        <section className="w-full max-w-3xl mx-auto flex flex-col items-center text-center shrink-0 mb-6 sm:mb-8 2xl:mb-10">
+          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl 2xl:text-5xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight mb-1 sm:mb-1.5">
+            {t.landing.title1} <br className="hidden sm:block" />
+            <span className="text-slate-500 dark:text-slate-400">
+              {t.landing.title2}
+            </span>
           </h1>
 
-          <p className="text-sm sm:text-base md:text-lg text-slate-500 font-light max-w-2xl leading-relaxed mb-6">
-            Une plateforme épurée, performante et sécurisée. Suivez vos
-            inventaires en temps réel, anticipez les ruptures de stock et
-            concentrez-vous sur le développement de votre activité.
+          <p className="text-xs sm:text-sm 2xl:text-base text-slate-600 dark:text-slate-300 font-normal max-w-lg mx-auto leading-normal mb-2 sm:mb-2.5">
+            {t.landing.subtitle}
           </p>
 
           <Link
             href="/sign-in"
-            className="flex items-center justify-center gap-2 bg-slate-800 text-white px-6 py-3 rounded-md text-sm font-medium hover:bg-slate-700 transition-colors shadow-sm"
+            className="flex items-center justify-center gap-2 bg-indigo-600 text-white px-4 py-1.5 sm:px-5 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold hover:bg-indigo-700 transition-colors shadow-sm shadow-indigo-600/20"
           >
-            Démarrer gratuitement
+            <span>{t.landing.getStarted}</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </section>
 
-        {/* Minimal Dashboard Preview */}
-        <section
-          className="w-full max-w-7xl mx-auto relative mt-4 md:mt-0 aspect-square sm:aspect-4/3 md:aspect-16/10 lg:aspect-video min-h-[400px]"
-          id="demo"
-        >
+        {/* Dashboard Preview Section */}
+        <section className="w-full max-w-6xl xl:max-w-7xl 2xl:max-w-[1440px] mx-auto flex flex-col min-h-0 shrink-0">
           <HeroDashboardMockup />
         </section>
       </main>

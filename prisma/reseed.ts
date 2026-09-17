@@ -1,6 +1,4 @@
-import { PrismaClient } from "@/app/generated/prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 const demoUserId = process.env.DEMO_USER_ID;
 

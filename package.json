@@ -10,26 +10,29 @@
     "format": "biome format --write"
   },
   "dependencies": {
-    "@stackframe/stack": "^2.8.54",
-    "lucide-react": "^0.553.0",
-    "next": "^16.0.7",
-    "react": "19.2.0",
-    "react-dom": "19.2.0",
-    "react-toastify": "^11.0.5",
-    "recharts": "^3.5.1",
-    "zod": "^4.1.13"
+    "@prisma/adapter-pg": "^7.10.0",
+    "@stackframe/stack": "^2.8.108",
+    "lucide-react": "^1.46.0",
+    "next": "^16.3.5",
+    "pg": "^8.23.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "recharts": "^3.10.1",
+    "sonner": "^2.0.8",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.0",
-    "@prisma/client": "^6.19.0",
-    "@tailwindcss/postcss": "^4.1.17",
-    "@types/node": "^20.19.25",
-    "@types/react": "^19.2.7",
-    "@types/react-dom": "^19.2.3",
+    "@biomejs/biome": "^2.5.14",
+    "@prisma/client": "^7.10.0",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^22.20.3",
+    "@types/pg": "^8.23.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "babel-plugin-react-compiler": "1.0.0",
-    "baseline-browser-mapping": "^2.11.20",
-    "prisma": "^6.19.0",
-    "tailwindcss": "^4.1.17",
-    "typescript": "^5.9.3"
+    "baseline-browser-mapping": "^2.11.24",
+    "prisma": "^7.10.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2"
   }
 }

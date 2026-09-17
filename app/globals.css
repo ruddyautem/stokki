@@ -1,18 +1,353 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --breakpoint-3xl: 125rem;
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-html {
+html,
+html[data-scroll-behavior="smooth"] {
   scroll-behavior: smooth;
 }
 
-.stack-settings-override [class*="max-w-[200px]"] {
-  max-width: 300px !important;
-  min-width: 300px !important;
+/* Hide number input spinners/spinbuttons */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
 }
 
-.stack-settings-override [class*="overflow-y-auto"] {
-  overflow-y: visible !important;
+/* Ensure Stack Auth settings content can scroll internally without overflowing the screen */
+.stack-settings-container .stack-scope {
+  height: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Left sidebar menu distribution */
+.stack-settings-container div:has(> button[class*="justify-start"]) {
+  min-width: 220px !important;
+  max-width: 240px !important;
+  padding: 0.75rem 0.5rem !important;
+  gap: 0.5rem !important;
+}
+
+@media (min-width: 1536px) {
+  .stack-settings-container div:has(> button[class*="justify-start"]) {
+    min-width: 260px !important;
+    max-width: 280px !important;
+    padding: 1rem 0.75rem !important;
+    gap: 0.75rem !important;
+  }
+}
+
+.stack-settings-container button[class*="justify-start"] {
+  padding: 0.625rem 0.875rem !important;
+  font-size: 0.925rem !important;
+  border-radius: 0.5rem !important;
+  height: 2.625rem !important;
+  min-height: 2.625rem !important;
+  max-height: 2.625rem !important;
+  flex-shrink: 0 !important;
+  flex-grow: 0 !important;
+  transition: all 0.15s ease-in-out !important;
+}
+
+@media (min-width: 1536px) {
+  .stack-settings-container button[class*="justify-start"] {
+    padding: 0.75rem 1rem !important;
+    font-size: 1rem !important;
+    height: 2.875rem !important;
+    min-height: 2.875rem !important;
+    max-height: 2.875rem !important;
+  }
+}
+
+/* Right pane styling */
+.stack-settings-container div:has(> [class*="w-[800px]"]) {
+  overflow-y: auto !important;
+  max-height: 100% !important;
+  justify-content: flex-start !important;
+  padding-left: 1.5rem !important;
+  padding-right: 1.5rem !important;
+}
+
+.stack-settings-container [class*="w-[800px]"] {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* Stack Auth dark mode CSS variables override */
+html.dark .stack-scope,
+.dark .stack-scope,
+[data-theme="dark"] .stack-scope,
+html:has(head > [data-stack-theme="dark"]) .stack-scope {
+  --background: 222.2 84% 4.9% !important;
+  --foreground: 210 40% 98% !important;
+  --card: 222.2 84% 4.9% !important;
+  --card-foreground: 210 40% 98% !important;
+  --popover: 222.2 84% 4.9% !important;
+  --popover-foreground: 210 40% 98% !important;
+  --primary: 243.4 75.4% 58.6% !important;
+  --primary-foreground: 0 0% 100% !important;
+  --secondary: 217.2 32.6% 17.5% !important;
+  --secondary-foreground: 210 40% 98% !important;
+  --muted: 217.2 32.6% 17.5% !important;
+  --muted-foreground: 215 20.2% 65.1% !important;
+  --accent: 217.2 32.6% 17.5% !important;
+  --accent-foreground: 210 40% 98% !important;
+  --destructive: 0 62.8% 50% !important;
+  --destructive-foreground: 210 40% 98% !important;
+  --border: 217.2 32.6% 17.5% !important;
+  --input: 217.2 32.6% 17.5% !important;
+  --ring: 243.4 75.4% 58.6% !important;
+  color-scheme: dark !important;
+}
+
+/* Ensure Stack Auth text and inputs are legible in dark mode */
+html.dark .stack-scope input,
+.dark .stack-scope input {
+  color: #f8fafc !important;
+  background-color: transparent !important;
+}
+
+html.dark .stack-scope label,
+.dark .stack-scope label {
+  color: #94a3b8 !important;
+}
+
+/* Ensure Stack Auth separator text ("ou continuer avec") is much lighter in dark mode */
+html.dark .stack-scope [class*="text-zinc-500"],
+.dark .stack-scope [class*="text-zinc-500"],
+[data-theme="dark"] .stack-scope [class*="text-zinc-500"] {
+  color: #cbd5e1 !important;
+}
+
+html.dark .stack-scope .bg-border,
+.dark .stack-scope .bg-border,
+[data-theme="dark"] .stack-scope .bg-border {
+  background-color: #334155 !important;
+}
+
+/* Stack Auth Links */
+.stack-scope a {
+  color: #4f46e5 !important;
+  transition: color 0.15s ease !important;
+}
+
+.stack-scope a:hover {
+  color: #4338ca !important;
+}
+
+html.dark .stack-scope a,
+.dark .stack-scope a {
+  color: #818cf8 !important;
+}
+
+html.dark .stack-scope a:hover,
+.dark .stack-scope a:hover {
+  color: #a5b4fc !important;
+}
+
+/* Stack Auth Primary Submit Button ("Se connecter") */
+.stack-scope button[type="submit"],
+.stack-scope button.bg-primary,
+.stack-scope .bg-primary {
+  background-color: #4f46e5 !important;
+  color: #ffffff !important;
+  border: 1px solid #4f46e5 !important;
+  font-weight: 500 !important;
+  border-radius: 0.5rem !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+.stack-scope button[type="submit"]:hover,
+.stack-scope button.bg-primary:hover,
+.stack-scope .bg-primary:hover {
+  background-color: #4338ca !important;
+  border-color: #4338ca !important;
+  box-shadow:
+    0 4px 6px -1px rgba(79, 70, 229, 0.2),
+    0 2px 4px -2px rgba(79, 70, 229, 0.2) !important;
+}
+
+.stack-scope button[type="submit"]:active,
+.stack-scope button.bg-primary:active,
+.stack-scope .bg-primary:active {
+  background-color: #3730a3 !important;
+  border-color: #3730a3 !important;
+  transform: scale(0.99);
+}
+
+/* Stack Auth Google OAuth Button ("Se connecter avec Google") */
+.stack-scope button[class*="stack-oauth-button"] {
+  background-color: #4f46e5 !important;
+  color: #ffffff !important;
+  border: 1px solid #4338ca !important;
+  font-weight: 500 !important;
+  border-radius: 0.5rem !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+.stack-scope button[class*="stack-oauth-button"]:hover {
+  background-color: #4338ca !important;
+  border-color: #3730a3 !important;
+  box-shadow:
+    0 4px 6px -1px rgba(79, 70, 229, 0.2),
+    0 2px 4px -2px rgba(79, 70, 229, 0.2) !important;
+}
+
+.stack-scope button[class*="stack-oauth-button"]:active {
+  background-color: #3730a3 !important;
+  border-color: #312e81 !important;
+  transform: scale(0.99);
+}
+
+/* Minimalist monochrome white brand icons for OAuth buttons (Google, GitHub, etc.) */
+.stack-scope button[class*="stack-oauth-button"] > div {
+  position: relative !important;
+  justify-content: center !important;
+}
+
+.stack-scope button[class*="stack-oauth-button"] > div > span {
+  text-align: center !important;
+  flex: none !important;
+}
+
+.stack-scope button[class*="stack-oauth-button"] svg {
+  position: absolute !important;
+  left: 0 !important;
+  background-color: transparent !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  width: 1rem !important;
+  height: 1rem !important;
+  flex-shrink: 0 !important;
+  color: #ffffff !important;
+}
+
+@media (min-width: 640px) {
+  .stack-scope button[class*="stack-oauth-button"] svg {
+    width: 1.125rem !important;
+    height: 1.125rem !important;
+  }
+}
+
+.stack-scope button[class*="stack-oauth-button"] svg path:not([fill="none"]),
+.stack-scope button[class*="stack-oauth-button"] svg polygon,
+.stack-scope button[class*="stack-oauth-button"] svg rect,
+.stack-scope button[class*="stack-oauth-button"] svg g {
+  fill: #ffffff !important;
+}
+
+/* Sonner Toast Dark Mode */
+html.dark [data-sonner-toaster] [data-sonner-toast],
+.dark [data-sonner-toaster] [data-sonner-toast] {
+  --normal-bg: #0f172a !important;
+  --normal-border: #1e293b !important;
+  --normal-text: #f8fafc !important;
+}
+
+html.dark [data-sonner-toaster] [data-close-button],
+.dark [data-sonner-toaster] [data-close-button] {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #94a3b8 !important;
+}
+
+html.dark [data-sonner-toaster] [data-close-button]:hover,
+.dark [data-sonner-toaster] [data-close-button]:hover {
+  background-color: #334155 !important;
+  color: #ffffff !important;
+}
+
+/* Sonner Toast Icons by Type (Green for success, Red for error) */
+[data-sonner-toast][data-type="success"] [data-icon],
+[data-sonner-toast][data-type="success"] [data-icon] svg {
+  color: #10b981 !important;
+  fill: currentColor !important;
+}
+
+[data-sonner-toast][data-type="error"] [data-icon],
+[data-sonner-toast][data-type="error"] [data-icon] svg {
+  color: #ef4444 !important;
+  fill: currentColor !important;
+}
+
+[data-sonner-toast][data-type="warning"] [data-icon],
+[data-sonner-toast][data-type="warning"] [data-icon] svg {
+  color: #f59e0b !important;
+  fill: currentColor !important;
+}
+
+[data-sonner-toast][data-type="info"] [data-icon],
+[data-sonner-toast][data-type="info"] [data-icon] svg {
+  color: #3b82f6 !important;
+  fill: currentColor !important;
+}
+
+/* Slightly brighter tones in dark mode for optimal contrast */
+html.dark [data-sonner-toast][data-type="success"] [data-icon],
+html.dark [data-sonner-toast][data-type="success"] [data-icon] svg,
+.dark [data-sonner-toast][data-type="success"] [data-icon],
+.dark [data-sonner-toast][data-type="success"] [data-icon] svg {
+  color: #34d399 !important;
+}
+
+html.dark [data-sonner-toast][data-type="error"] [data-icon],
+html.dark [data-sonner-toast][data-type="error"] [data-icon] svg,
+.dark [data-sonner-toast][data-type="error"] [data-icon],
+.dark [data-sonner-toast][data-type="error"] [data-icon] svg {
+  color: #f87171 !important;
+}
+
+/* Stack Auth "last" badge localization & styling */
+.stack-scope button span.absolute.-top-2.-right-2 {
+  z-index: 10 !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2) !important;
+}
+
+html[lang^="fr"] .stack-scope button span.absolute.-top-2.-right-2,
+html[data-lang="fr"] .stack-scope button span.absolute.-top-2.-right-2,
+:lang(fr) .stack-scope button span.absolute.-top-2.-right-2 {
+  font-size: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+html[lang^="fr"] .stack-scope button span.absolute.-top-2.-right-2::after,
+html[data-lang="fr"] .stack-scope button span.absolute.-top-2.-right-2::after,
+:lang(fr) .stack-scope button span.absolute.-top-2.-right-2::after {
+  content: "Dernier utilisé" !important;
+  font-size: 0.75rem !important;
+  line-height: 1rem !important;
+  white-space: nowrap !important;
+}
+
+html[lang^="en"] .stack-scope button span.absolute.-top-2.-right-2,
+html[data-lang="en"] .stack-scope button span.absolute.-top-2.-right-2 {
+  font-size: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+html[lang^="en"] .stack-scope button span.absolute.-top-2.-right-2::after,
+html[data-lang="en"] .stack-scope button span.absolute.-top-2.-right-2::after {
+  content: "Last used" !important;
+  font-size: 0.75rem !important;
+  line-height: 1rem !important;
+  white-space: nowrap !important;
 }

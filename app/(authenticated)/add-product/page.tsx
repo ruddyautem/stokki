@@ -1,16 +1,18 @@
 "use client";
 
-import { ArrowLeft, Package } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "react-toastify";
-import FormInput from "@/components/FormInput";
+import { toast } from "sonner";
+import LanguageToggle from "@/components/LanguageToggle";
+import ThemeToggle from "@/components/ThemeToggle";
+import { useLanguage } from "@/context/LanguageContext";
 import { CreateProduct } from "@/lib/products";
 
 const AddProductPage = () => {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { t } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -19,118 +21,169 @@ const AddProductPage = () => {
     try {
       const formData = new FormData(e.currentTarget);
       await CreateProduct(formData);
-      toast.success("Produit ajouté avec succès !");
+      toast.success(t.addProduct.addSuccess);
       router.push("/inventory");
       router.refresh();
     } catch (error) {
       console.error("Error creating product:", error);
-      toast.error("Erreur lors de l'ajout du produit");
+      toast.error(t.addProduct.addError);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="flex-1 flex flex-col bg-slate-50 relative">
-      <main className="p-4 pt-16 lg:p-8 flex-1">
-        <div className="mb-6 lg:mb-8 text-center w-full">
-          <Link
-            href="/inventory"
-            className="hidden lg:flex absolute left-8 items-center gap-1.5 mt-2 text-slate-600 hover:text-slate-900 mb-4 text-sm font-medium transition-colors cursor-pointer"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour à l'inventaire
-          </Link>
-          <div className="flex flex-col items-center gap-3">
-            <div className="bg-linear-to-br from-slate-700 to-slate-900 rounded-lg p-3 shadow-md">
-              <Package className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
-                Ajouter un produit
-              </h1>
-              <p className="text-slate-600 mt-1">
-                Ajouter un nouveau produit à votre inventaire
-              </p>
-            </div>
-          </div>
+    <div className="flex-1 min-h-0 overflow-y-auto flex flex-col bg-slate-50 dark:bg-slate-950 px-4 pt-3 pb-24 sm:items-center sm:px-6 sm:pt-6 sm:pb-28 lg:py-6 lg:px-8 lg:ml-64 relative transition-colors duration-200">
+      {/* Desktop Theme & Language Toggles */}
+      <div className="hidden lg:flex items-center gap-2 absolute right-8 top-6 z-20">
+        <ThemeToggle />
+        <LanguageToggle />
+      </div>
+
+      {/* Inner: flex-1 on mobile, natural + my-auto centering on desktop */}
+      <div className="flex-1 min-h-0 flex flex-col w-full max-w-sm mx-auto sm:flex-none sm:my-auto sm:max-w-xl lg:max-w-2xl">
+        {/* Header */}
+        <div className="text-center mb-3 sm:mb-6 shrink-0">
+          <h1 className="text-xl sm:text-3xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            {t.addProduct.title}
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-0.5 max-w-md mx-auto">
+            {t.addProduct.subtitle}
+          </p>
         </div>
 
-        <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-xl border border-slate-200 p-4 sm:p-6 lg:p-8 shadow-sm">
-            <form className="space-y-6" onSubmit={handleSubmit}>
-              <FormInput
-                id="name"
-                name="name"
-                label="Nom du produit"
-                required
-                placeholder="Ex: Ordinateur portable Dell XPS 15"
-              />
+        {/* Card: fills remaining height on mobile, natural on desktop */}
+        <div className="flex-1 min-h-0 flex flex-col bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 p-5 sm:flex-none sm:p-7 lg:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.04)] dark:shadow-none lg:min-h-0 lg:justify-center transition-colors">
+          <form
+            className="flex-1 flex flex-col sm:flex-none"
+            onSubmit={handleSubmit}
+          >
+            {/* Fields group */}
+            <div className="space-y-4 sm:space-y-5">
+              {/* Nom du produit */}
+              <div>
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-semibold text-slate-900 dark:text-slate-200 mb-1 sm:mb-2"
+                >
+                  {t.addProduct.nameLabel}{" "}
+                  <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  required
+                  placeholder={t.addProduct.namePlaceholder}
+                  className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base border border-slate-300 dark:border-slate-700 rounded-lg sm:rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                />
+              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-                <FormInput
+              {/* Quantité */}
+              <div>
+                <label
+                  htmlFor="quantity"
+                  className="block text-sm font-semibold text-slate-900 dark:text-slate-200 mb-1 sm:mb-2"
+                >
+                  {t.addProduct.qtyLabel}{" "}
+                  <span className="text-red-500">*</span>
+                </label>
+                <input
                   type="number"
                   id="quantity"
                   name="quantity"
-                  label="Quantité"
                   required
                   min={0}
                   placeholder="0"
+                  className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base border border-slate-300 dark:border-slate-700 rounded-lg sm:rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
                 />
-                <FormInput
+              </div>
+
+              {/* Prix */}
+              <div>
+                <label
+                  htmlFor="price"
+                  className="block text-sm font-semibold text-slate-900 dark:text-slate-200 mb-1 sm:mb-2"
+                >
+                  {t.addProduct.priceLabel}{" "}
+                  <span className="text-red-500">*</span>
+                </label>
+                <input
                   type="number"
                   id="price"
                   name="price"
-                  label="Prix (€)"
                   required
                   step={0.01}
                   min={0}
                   placeholder="0.00"
+                  className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base border border-slate-300 dark:border-slate-700 rounded-lg sm:rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
                 />
               </div>
 
-              <FormInput
-                id="sku"
-                name="sku"
-                label="SKU"
-                optionalLabel={"(Facultatif)"}
-                placeholder="Ex: DELL-XPS15-001"
-              />
-
+              {/* SKU */}
               <div>
-                <FormInput
+                <label
+                  htmlFor="sku"
+                  className="block text-sm font-semibold text-slate-900 dark:text-slate-200 mb-1 sm:mb-2"
+                >
+                  {t.addProduct.skuLabel}{" "}
+                  <span className="text-slate-400 dark:text-slate-500 text-xs font-normal">
+                    {t.addProduct.skuOptional}
+                  </span>
+                </label>
+                <input
+                  id="sku"
+                  name="sku"
+                  placeholder={t.addProduct.skuPlaceholder}
+                  className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base border border-slate-300 dark:border-slate-700 rounded-lg sm:rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                />
+              </div>
+
+              {/* Seuil de stock faible */}
+              <div>
+                <label
+                  htmlFor="lowStockAt"
+                  className="block text-sm font-semibold text-slate-900 dark:text-slate-200 mb-1 sm:mb-2"
+                >
+                  {t.addProduct.lowStockThreshold}{" "}
+                  <span className="text-slate-400 dark:text-slate-500 text-xs font-normal">
+                    {t.addProduct.skuOptional}
+                  </span>
+                </label>
+                <input
                   type="number"
                   id="lowStockAt"
                   name="lowStockAt"
-                  label="Seuil de stock faible"
-                  optionalLabel={"(Facultatif)"}
                   min={0}
                   placeholder="Ex: 5"
+                  className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base border border-slate-300 dark:border-slate-700 rounded-lg sm:rounded-xl bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-indigo-500 focus:border-transparent transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
                 />
-                <p className="text-xs text-slate-500 mt-2">
-                  Vous recevrez une alerte lorsque le stock atteindra ce seuil
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 hidden sm:block">
+                  {t.addProduct.lowStockThresholdHint}
                 </p>
               </div>
+            </div>
 
-              <div className="flex flex-col sm:flex-row gap-3 pt-4 items-center justify-center ">
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full sm:w-auto px-8 py-3 bg-slate-800 text-white rounded-lg font-medium hover:bg-slate-900 transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                >
-                  {isSubmitting ? "Ajout en cours..." : "Ajouter le produit"}
-                </button>
-                <Link
-                  href="/inventory"
-                  className="w-full sm:w-auto text-center px-8 py-3 bg-slate-100 text-slate-700 rounded-lg font-medium hover:bg-slate-200 transition-all"
-                >
-                  Annuler
-                </Link>
-              </div>
-            </form>
-          </div>
+            {/* Buttons — mt-auto pushes them to bottom of flex-col form on mobile */}
+            <div className="mt-auto pt-5 flex gap-3 sm:mt-6 sm:pt-0">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="flex-1 py-3 sm:py-3.5 px-4 sm:px-6 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm sm:text-base font-semibold active:scale-[0.99] transition-all shadow-md shadow-indigo-600/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              >
+                {isSubmitting
+                  ? t.addProduct.submitting
+                  : t.addProduct.submitButton}
+              </button>
+              <Link
+                href="/inventory"
+                className="py-3 sm:py-3.5 px-4 sm:px-6 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl text-sm sm:text-base font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all text-center"
+              >
+                {t.addProduct.cancelButton}
+              </Link>
+            </div>
+          </form>
         </div>
-      </main>
+      </div>
     </div>
   );
 };
