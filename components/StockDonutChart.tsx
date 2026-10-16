@@ -27,7 +27,7 @@ const StockDonutChart = ({ data, inStockPercentage }: StockDonutChartProps) => {
 
   if (!isMounted) {
     return (
-      <div className="relative w-[160px] h-[160px] sm:w-[192px] sm:h-[192px]">
+      <div className="relative w-40 h-40 sm:w-48 sm:h-48">
         <DonutCenter percentage={inStockPercentage} />
       </div>
     );

@@ -50,7 +50,7 @@ export default function Home() {
           </Link>
         </div>
       </header>
-      <main className="flex-1 flex flex-col justify-center items-center w-full pt-2 sm:pt-3 2xl:pt-4 pb-2 sm:pb-3 px-3 sm:px-6 lg:px-8 max-w-[1600px] mx-auto min-h-0">
+      <main className="flex-1 flex flex-col justify-center items-center w-full pt-2 sm:pt-3 2xl:pt-4 pb-2 sm:pb-3 px-3 sm:px-6 lg:px-8 max-w-400 mx-auto min-h-0">
         {/* Hero Text */}
         <section className="w-full max-w-3xl mx-auto flex flex-col items-center text-center shrink-0 mb-6 sm:mb-8 2xl:mb-10">
           <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl 2xl:text-5xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight mb-1 sm:mb-1.5">
@@ -74,7 +74,7 @@ export default function Home() {
         </section>
 
         {/* Dashboard Preview Section */}
-        <section className="w-full max-w-6xl xl:max-w-7xl 2xl:max-w-[1440px] mx-auto flex flex-col min-h-0 shrink-0">
+        <section className="w-full max-w-6xl xl:max-w-7xl 2xl:max-w-360 mx-auto flex flex-col min-h-0 shrink-0">
           <HeroDashboardMockup />
         </section>
       </main>

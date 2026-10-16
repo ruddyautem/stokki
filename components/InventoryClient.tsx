@@ -40,7 +40,7 @@ export default function InventoryClient({
 
   return (
     <PageLayout title={t.inventory.title} subtitle={t.inventory.subtitle}>
-      <div className="space-y-3 sm:space-y-4 lg:space-y-3 pb-2 lg:pb-1 w-full max-w-7xl 2xl:max-w-[1680px] 3xl:max-w-[1760px] mx-auto">
+      <div className="space-y-3 sm:space-y-4 lg:space-y-3 pb-2 lg:pb-1 w-full max-w-7xl 2xl:max-w-420 3xl:max-w-440 mx-auto">
         <InventoryTable
           items={items}
           initialStats={initialStats}

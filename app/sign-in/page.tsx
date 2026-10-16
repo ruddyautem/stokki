@@ -90,7 +90,7 @@ const SignInPage = () => {
 
           {/* Test Account Credentials */}
           <div className="bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl shadow-md sm:shadow-xl border border-slate-200 dark:border-slate-800 p-4 sm:p-8 mb-2.5 sm:mb-4 transition-colors">
-            <div className="w-full max-w-[380px] mx-auto">
+            <div className="w-full max-w-95 mx-auto">
               <div className="flex items-center justify-center mb-3 sm:mb-4">
                 <div className="inline-flex items-center justify-center px-3 py-1 sm:py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700">
                   <h3 className="font-semibold text-slate-700 dark:text-slate-200 text-xs sm:text-sm text-center">
