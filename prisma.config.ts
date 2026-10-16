@@ -1,15 +1,15 @@
 import "dotenv/config";
-import path from "node:path";
-import { defineConfig } from "prisma/config";
+import { defineConfig as definePostgresConfig } from "@prisma/orm-postgres/config";
+import { definePrismaConfig } from "prisma/config";
 
-export default defineConfig({
-  schema: path.join("prisma", "schema.prisma"),
-  migrations: {
-    path: path.join("prisma", "migrations"),
-  },
-  datasource: {
-    url:
-      process.env.DATABASE_URL ||
-      "postgresql://postgres:postgres@localhost:5432/postgres",
-  },
+export default definePrismaConfig({
+  orm: definePostgresConfig({
+    contract: "prisma8/contract.prisma",
+    output: "app/generated/prisma8",
+    db: {
+      connection:
+        process.env.DATABASE_URL ||
+        "postgresql://invalid:invalid@127.0.0.1:1/invalid",
+    },
+  }),
 });

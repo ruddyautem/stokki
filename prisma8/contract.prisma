@@ -1,0 +1,20 @@
+// use prisma-8
+// Equivalent of the existing Prisma 7 Product schema. The database is not changed by emitting this contract.
+
+namespace public {
+  model Product {
+    id         String                                                    @id @default(cuid(2))
+    userId     String
+    name       String
+    sku        String?
+    price      Numeric(12, 2)
+    quantity   Int                                                       @default(0)
+    lowStockAt Int?
+    createdAt  TimestampString(3)                                        @default(now())
+    updatedAt  temporal.timestampString(3, onCreate: now, onUpdate: now)
+
+    @@index([sku], map: "Product_sku_key", unique: true)
+    @@index([userId, name], map: "Product_userId_name_idx")
+    @@index([createdAt], map: "Product_createdAt_idx")
+  }
+}

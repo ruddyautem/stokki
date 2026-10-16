@@ -53,7 +53,7 @@ L'expérience a été spécialement optimisée pour être ultra-rapide, réactiv
 | **Langage** | TypeScript |
 | **Package Manager** | Bun |
 | **Styling** | Tailwind CSS v4 + Dark mode natif |
-| **Base de données** | PostgreSQL via Prisma 7 (`@prisma/adapter-pg` + `pg`) |
+| **Base de données** | PostgreSQL via Prisma ORM 8 (contrat et client) |
 | **Authentification** | Stack Auth (intégré avec StackClientProvider dynamique) |
 | **Visualisation** | Recharts |
 | **Icônes** | Lucide React |
@@ -108,16 +108,20 @@ stokki/
 │   └── useBodyScrollLock.ts     # Verrouillage du scroll si besoin
 ├── lib/
 │   ├── auth.ts                  # Récupération de l'utilisateur courant
-│   ├── prisma.ts                # Client Prisma 7 singleton avec adaptateur pg
+│   ├── prisma.ts                # Client PostgreSQL Prisma ORM 8
 │   └── products.ts              # Actions serveur (CRUD, mise à jour de quantité)
+├── migrations/
+│   ├── app/refs/db.json         # Référence du contrat signé
+│   └── snapshots/              # Snapshot du contrat signé
 ├── prisma/
-│   ├── migrations/              # Historique des migrations SQL
-│   ├── reseed.ts                # Script de réensemencement des données de démo
-│   └── schema.prisma            # Schéma PostgreSQL (Product)
+│   └── reseed.ts                # Script de réensemencement des données de démo
+├── prisma8/
+│   └── contract.prisma          # Contrat PostgreSQL Prisma ORM 8 (Product)
 ├── stack/
 │   ├── client.tsx               # Configuration Stack Auth client
-│   └── server.ts                # Configuration Stack Auth serveur
+│   └── server.tsx               # Configuration Stack Auth serveur
 ├── biome.json                   # Configuration Biome linter/formateur
+├── prisma.config.ts             # Configuration du contrat Prisma ORM 8
 ├── next.config.ts
 ├── package.json
 └── README.md
@@ -131,13 +135,24 @@ stokki/
 git clone <url-du-repo>
 cd stokki
 bun install
-bunx prisma generate
 bun run dev
 ```
 
 Ouvrez ensuite [http://localhost:3000](http://localhost:3000) dans votre navigateur.
 
 > 💡 Assurez-vous d'avoir configuré vos variables d'environnement dans un fichier `.env` (`DATABASE_URL`, clés Stack Auth).
+
+`bun install` et `bun run build` émettent le contrat Prisma ORM 8. Le projet ne dépend plus de Prisma 7. Le contrat natif conserve les mêmes empreintes de stockage et d'exécution que le schéma précédent ; aucune modification de table n'est nécessaire pour cette mise à jour du code.
+
+**Base Neon existante :** `bun prisma db sign` a été exécuté avec succès ; son marqueur et le ref `db` pointent vers le contrat `c75d1e64…`. `bun prisma migration status` a ensuite indiqué « No migrations found ». Le snapshot et le ref générés dans `migrations/` doivent être versionnés avec le contrat. Revérifiez l'état avant toute nouvelle migration. Pour un changement de schéma ultérieur, utilisez `bun prisma contract emit`, `bun prisma migration plan --name <nom>` puis, après revue du plan, `bun prisma db migrate --advance-ref db`. Toute autre base (staging, preview, etc.) doit être vérifiée et signée séparément avant sa première migration Prisma 8. Voir le [guide officiel de migration](https://www.prisma.io/docs/guides/upgrade-prisma-orm/postgresql). Prisma ORM 8 est encore une version candidate.
+
+### 🔄 Rotation des produits de démonstration
+
+`prisma/reseed.ts` conserve le comportement voulu : il tire un nombre de 3 à 12, supprime jusqu'à ce nombre de produits existants du compte démo, puis crée exactement ce nombre de nouveaux produits issus du catalogue. Si le compte n'a aucun produit, il ne crée rien ; s'il en a moins que le nombre tiré, le total augmente. Le script exige `DATABASE_URL` et `DEMO_USER_ID` dans l'environnement et peut être lancé avec `bun prisma/reseed.ts`. Il **modifie la base visée** : vérifiez la connexion et l'identifiant du compte avant de le lancer, notamment depuis un cron sur le VPS. La configuration de ce cron n'est pas dans ce dépôt et n'a pas été vérifiée ici.
+
+### ✅ Vérifications
+
+Lancez `bun run lint`, `bun x tsc --noEmit` et `bun run build` avant déploiement. Le dépôt n'a pas encore de suite de tests automatisés dédiée aux fonctionnalités.
 
 ---
 
@@ -186,7 +201,7 @@ The UX has been specifically crafted to be lightweight, responsive, visually pol
 | **Language** | TypeScript |
 | **Package Manager** | Bun |
 | **Styling** | Tailwind CSS v4 + Native Dark Mode |
-| **Database** | PostgreSQL via Prisma 7 (`@prisma/adapter-pg` + `pg`) |
+| **Database** | PostgreSQL via Prisma ORM 8 (contract and client) |
 | **Authentication** | Stack Auth (via custom dynamic StackClientProvider) |
 | **Charts** | Recharts |
 | **Icons** | Lucide React |
@@ -241,16 +256,20 @@ stokki/
 │   └── useBodyScrollLock.ts     # Scroll lock hook
 ├── lib/
 │   ├── auth.ts                  # Current user helper
-│   ├── prisma.ts                # Prisma 7 singleton client with pg adapter
+│   ├── prisma.ts                # Prisma ORM 8 PostgreSQL client
 │   └── products.ts              # Server actions (CRUD, live quantity updates)
+├── migrations/
+│   ├── app/refs/db.json         # Signed contract reference
+│   └── snapshots/              # Signed contract snapshot
 ├── prisma/
-│   ├── migrations/              # SQL migration history
-│   ├── reseed.ts                # Demo data reseed script
-│   └── schema.prisma            # PostgreSQL schema (Product)
+│   └── reseed.ts                # Demo data reseed script
+├── prisma8/
+│   └── contract.prisma          # Prisma ORM 8 PostgreSQL contract (Product)
 ├── stack/
 │   ├── client.tsx               # Stack Auth client configuration
-│   └── server.ts                # Stack Auth server configuration
+│   └── server.tsx               # Stack Auth server configuration
 ├── biome.json                   # Biome linter/formatter configuration
+├── prisma.config.ts             # Prisma ORM 8 contract configuration
 ├── next.config.ts
 ├── package.json
 └── README.md
@@ -264,10 +283,21 @@ stokki/
 git clone <repo-url>
 cd stokki
 bun install
-bunx prisma generate
 bun run dev
 ```
 
 Then visit [http://localhost:3000](http://localhost:3000).
 
 > 💡 Ensure your `.env` contains your PostgreSQL connection string (`DATABASE_URL`) and Stack Auth credentials.
+
+`bun install` and `bun run build` emit the Prisma ORM 8 contract. The project no longer depends on Prisma 7. The native contract has the same storage and execution hashes as the previous schema, so this code update does not require a table change.
+
+**Existing Neon database:** `bun prisma db sign` completed successfully; its marker and the `db` ref point to contract `c75d1e64…`. `bun prisma migration status` then reported “No migrations found.” Commit the generated snapshot and ref in `migrations/` alongside the contract. Recheck the status before any new migration. For later schema changes, run `bun prisma contract emit`, `bun prisma migration plan --name <name>`, then review the plan before `bun prisma db migrate --advance-ref db`. Verify and sign any other database (staging, preview, etc.) separately before its first Prisma 8 migration. See the [official migration guide](https://www.prisma.io/docs/guides/upgrade-prisma-orm/postgresql). Prisma ORM 8 is still a release candidate.
+
+### 🔄 Demo product rotation
+
+`prisma/reseed.ts` preserves the intended behavior: it picks a number from 3 to 12, deletes up to that many existing demo-account products, then inserts exactly that many new products from the catalogue. If the account has no products, it does nothing; if it has fewer than the chosen number, the total grows. Set `DATABASE_URL` and `DEMO_USER_ID` in the environment, then run `bun prisma/reseed.ts`. This **writes to the selected database**: verify the connection and demo user ID first, especially when running it from a VPS cron. The cron configuration is not in this repository and has not been verified here.
+
+### ✅ Checks
+
+Run `bun run lint`, `bun x tsc --noEmit`, and `bun run build` before deployment. The repository does not yet contain a dedicated automated feature-test suite.

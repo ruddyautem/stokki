@@ -11,8 +11,8 @@ interface Product {
   quantity: number;
   sku: string | null;
   lowStockAt: number | null;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   userId: string;
 }
 

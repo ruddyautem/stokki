@@ -1,59 +1,65 @@
 import DashboardClient from "@/components/DashboardClient";
 import getCurrentUser from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { getDb } from "@/lib/prisma";
 
 const DashboardPage = async () => {
   const user = await getCurrentUser();
   const userId = user?.id;
+  if (!userId) throw new Error("Unauthorized");
+  const db = getDb();
 
   // PERF FIX: use DB-level count() for stock levels instead of JS-filtering
   // all products in memory. totalValue still needs price*qty (no native Prisma
   // aggregate for product expressions), but we avoid fetching createdAt for it.
   const [
-    totalProducts,
-    lowStock,
-    inStockCount,
-    lowStockCount,
-    outOfStockCount,
+    totalProductsResult,
+    lowStockResult,
+    inStockResult,
+    lowQuantityResult,
+    outOfStockResult,
     priceQtyProducts,
     weeklyProducts,
     recent,
   ] = await Promise.all([
-    prisma.product.count({ where: { userId } }),
-    prisma.product.count({
-      where: { userId, lowStockAt: { not: null }, quantity: { lte: 5 } },
-    }),
+    db.orm.public.Product.where({ userId }).aggregate((agg) => ({
+      count: agg.count(),
+    })),
+    db.orm.public.Product.where({ userId })
+      .where((product) => product.lowStockAt.isNotNull())
+      .where((product) => product.quantity.lte(5))
+      .aggregate((agg) => ({ count: agg.count() })),
     // DB counts — avoids loading all products into JS memory
-    prisma.product.count({ where: { userId, quantity: { gt: 5 } } }),
-    prisma.product.count({
-      where: {
-        userId,
-        AND: [{ quantity: { lt: 5 } }, { quantity: { gte: 1 } }],
-      },
-    }),
-    prisma.product.count({ where: { userId, quantity: { equals: 0 } } }),
+    db.orm.public.Product.where({ userId })
+      .where((product) => product.quantity.gt(5))
+      .aggregate((agg) => ({ count: agg.count() })),
+    db.orm.public.Product.where({ userId })
+      .where((product) => product.quantity.lt(5))
+      .where((product) => product.quantity.gte(1))
+      .aggregate((agg) => ({ count: agg.count() })),
+    db.orm.public.Product.where({ userId })
+      .where({ quantity: 0 })
+      .aggregate((agg) => ({ count: agg.count() })),
     // Minimal selects — only what each computation needs
-    prisma.product.findMany({
-      where: { userId },
-      select: { price: true, quantity: true },
-    }),
-    prisma.product.findMany({
-      where: { userId },
-      select: { createdAt: true },
-    }),
-    prisma.product.findMany({
-      where: { userId },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-    }),
+    db.orm.public.Product.where({ userId }).select("price", "quantity").all(),
+    db.orm.public.Product.where({ userId }).select("createdAt").all(),
+    db.orm.public.Product.where({ userId })
+      .orderBy((product) => product.createdAt.desc())
+      .limit(5)
+      .all(),
   ]);
+
+  const totalProducts = totalProductsResult.count;
+  const lowStock = lowStockResult.count;
+  const inStockCount = inStockResult.count;
+  const lowStockCount = lowQuantityResult.count;
+  const outOfStockCount = outOfStockResult.count;
 
   const totalValue = priceQtyProducts.reduce(
     (sum, product) => sum + Number(product.price) * Number(product.quantity),
     0,
   );
 
-  // Convert Prisma Decimals to plain numbers/objects for Client Components
+  // Convert exact decimal strings to numbers for Client Components.
   const serializedRecent = recent.map((product) => ({
     ...product,
     price: Number(product.price),
@@ -84,7 +90,7 @@ const DashboardPage = async () => {
     )}/${String(weekStart.getDate()).padStart(2, "0")}`;
 
     const weekCount = weeklyProducts.filter((product) => {
-      const productDate = new Date(product.createdAt);
+      const productDate = new Date(`${product.createdAt.replace(" ", "T")}Z`);
       return productDate >= weekStart && productDate <= weekEnd;
     }).length;
     weeklyProductsData.push({ week: weekLabel, products: weekCount });

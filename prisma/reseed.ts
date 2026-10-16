@@ -1,4 +1,5 @@
-import { prisma } from "@/lib/prisma";
+import type { Models } from "@/app/generated/prisma8/contract.d";
+import { getDb } from "@/lib/prisma";
 
 const demoUserId = process.env.DEMO_USER_ID;
 
@@ -136,11 +137,11 @@ const generateQuantity = () => {
 };
 
 const main = async () => {
+  const db = getDb();
   // 1️⃣ Get existing demo products
-  const existing = await prisma.product.findMany({
-    where: { userId: demoUserId },
-    select: { id: true },
-  });
+  const existing = await db.orm.public.Product.where({ userId: demoUserId })
+    .select("id")
+    .all();
 
   if (existing.length === 0) {
     console.log("No items found for the demo user — nothing to rotate.");
@@ -153,9 +154,9 @@ const main = async () => {
   const toDelete = shuffle(existing).slice(0, rotateCount);
 
   // 2️⃣ Delete selected items
-  await prisma.product.deleteMany({
-    where: { id: { in: toDelete.map((p) => p.id) } },
-  });
+  await db.orm.public.Product.where({ userId: demoUserId })
+    .where((product) => product.id.in(toDelete.map((item) => item.id)))
+    .deleteAndCount();
 
   // 3️⃣ Add new items from pool
   const newItems = shuffle(ITEMS_POOL).slice(0, rotateCount);
@@ -165,15 +166,15 @@ const main = async () => {
     return {
       userId: demoUserId,
       name,
-      price: Number((Math.random() * 90 + 10).toFixed(2)),
+      price: (Math.random() * 90 + 10).toFixed(
+        2,
+      ) as Models.public_Product["price"],
       quantity,
       lowStockAt: 5,
     };
   });
 
-  await prisma.product.createMany({
-    data: productsToCreate,
-  });
+  await db.orm.public.Product.createAndCount(productsToCreate);
 
   // ✅ Log statistics
   const zeroQty = productsToCreate.filter((p) => p.quantity === 0).length;
@@ -189,4 +190,4 @@ const main = async () => {
 
 main()
   .catch((e) => console.error("❌ Error during rotation:", e))
-  .finally(async () => prisma.$disconnect());
+  .finally(async () => getDb().close());

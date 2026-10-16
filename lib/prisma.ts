@@ -1,20 +1,20 @@
-import { PrismaPg } from "@prisma/adapter-pg";
-import { Pool } from "pg";
-import { PrismaClient } from "@/app/generated/prisma/client";
-
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
+import postgres from "@prisma/orm-postgres/runtime";
+import type { Contract } from "@/app/generated/prisma8/contract.d";
+import contractJson from "@/app/generated/prisma8/contract.json" with {
+  type: "json",
 };
 
-function createPrismaClient() {
-  const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    connectionTimeoutMillis: 15000,
-  });
-  const adapter = new PrismaPg(pool);
-  return new PrismaClient({ adapter });
-}
+const createDb = () => {
+  const url = process.env.DATABASE_URL;
+  if (!url) throw new Error("DATABASE_URL is required");
+  return postgres<Contract>({ url, contractJson });
+};
 
-export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+const globalForPrisma = globalThis as unknown as {
+  db?: ReturnType<typeof createDb>;
+};
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+export const getDb = () => {
+  globalForPrisma.db ??= createDb();
+  return globalForPrisma.db;
+};

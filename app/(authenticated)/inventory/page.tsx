@@ -1,6 +1,6 @@
 import InventoryClient from "@/components/InventoryClient";
 import getCurrentUser from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { getDb } from "@/lib/prisma";
 import DeleteProduct from "@/lib/products";
 
 const Inventory = async ({
@@ -10,25 +10,38 @@ const Inventory = async ({
 }) => {
   const user = await getCurrentUser();
   const userId = user?.id;
+  if (!userId) throw new Error("Unauthorized");
+  const db = getDb();
   const params = await searchParams;
   const searchQuery = (params.searchQuery ?? "").trim();
 
-  const [totalCount, inStockCount, lowStockCount, outOfStockCount, products] =
-    await Promise.all([
-      prisma.product.count({ where: { userId } }),
-      prisma.product.count({ where: { userId, quantity: { gt: 5 } } }),
-      prisma.product.count({
-        where: {
-          userId,
-          AND: [{ quantity: { lt: 5 } }, { quantity: { gte: 1 } }],
-        },
-      }),
-      prisma.product.count({ where: { userId, quantity: { equals: 0 } } }),
-      prisma.product.findMany({
-        where: { userId },
-        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-      }),
-    ]);
+  const [
+    totalResult,
+    inStockResult,
+    lowStockResult,
+    outOfStockResult,
+    products,
+  ] = await Promise.all([
+    db.orm.public.Product.where({ userId }).aggregate((agg) => ({
+      count: agg.count(),
+    })),
+    db.orm.public.Product.where({ userId })
+      .where((product) => product.quantity.gt(5))
+      .aggregate((agg) => ({ count: agg.count() })),
+    db.orm.public.Product.where({ userId })
+      .where((product) => product.quantity.lt(5))
+      .where((product) => product.quantity.gte(1))
+      .aggregate((agg) => ({ count: agg.count() })),
+    db.orm.public.Product.where({ userId })
+      .where({ quantity: 0 })
+      .aggregate((agg) => ({ count: agg.count() })),
+    db.orm.public.Product.where({ userId })
+      .orderBy([
+        (product) => product.createdAt.desc(),
+        (product) => product.id.desc(),
+      ])
+      .all(),
+  ]);
 
   // Convert Decimal to number for client component
   const items = products.map((product) => ({
@@ -38,10 +51,10 @@ const Inventory = async ({
 
   // Initial stats passed to InventoryClient for live synchronization
   const initialStats = {
-    totalCount,
-    inStockCount,
-    lowStockCount,
-    outOfStockCount,
+    totalCount: totalResult.count,
+    inStockCount: inStockResult.count,
+    lowStockCount: lowStockResult.count,
+    outOfStockCount: outOfStockResult.count,
   };
 
   // Server action to pass to client component

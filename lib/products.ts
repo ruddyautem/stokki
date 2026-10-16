@@ -2,12 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import type { Models } from "@/app/generated/prisma8/contract.d";
 import getCurrentUser from "./auth";
-import { prisma } from "./prisma";
+import { getDb } from "./prisma";
 
 const productSchema = z.object({
   name: z.string().min(1, "Product name is required"),
-  price: z.coerce.number().nonnegative("Price must be non-negative"),
+  price: z
+    .string()
+    .regex(/^(?:0|[1-9]\d{0,9})(?:\.\d{1,2})?$/, "Invalid price"),
   quantity: z.coerce
     .number()
     .int()
@@ -26,9 +29,9 @@ const DeleteProduct = async (formData: FormData) => {
     .min(1, "ID required")
     .parse(String(formData.get("id") ?? ""));
 
-  await prisma.product.deleteMany({
-    where: { userId: user.id, id },
-  });
+  await getDb()
+    .orm.public.Product.where({ userId: user.id, id })
+    .deleteAndCount();
 
   revalidatePath("/inventory");
 };
@@ -51,8 +54,10 @@ export const CreateProduct = async (formData: FormData) => {
   }
 
   try {
-    await prisma.product.create({
-      data: { ...parsed.data, userId: user.id },
+    await getDb().orm.public.Product.create({
+      ...parsed.data,
+      price: parsed.data.price as Models.public_Product["price"],
+      userId: user.id,
     });
     revalidatePath("/inventory");
     return { success: true };
@@ -76,12 +81,10 @@ export const DeleteMultipleProducts = async (productIds: string[]) => {
   }
 
   try {
-    await prisma.product.deleteMany({
-      where: {
-        id: { in: productIds },
-        userId: userId,
-      },
-    });
+    await getDb()
+      .orm.public.Product.where({ userId })
+      .where((product) => product.id.in(productIds))
+      .deleteAndCount();
 
     revalidatePath("/inventory");
     return { success: true };
@@ -103,9 +106,7 @@ export const UpdateProductQuantity = async (id: string, delta: number) => {
     throw new Error("Invalid parameters");
   }
 
-  const product = await prisma.product.findFirst({
-    where: { id, userId },
-  });
+  const product = await getDb().orm.public.Product.first({ id, userId });
 
   if (!product) {
     throw new Error("Product not found");
@@ -113,9 +114,8 @@ export const UpdateProductQuantity = async (id: string, delta: number) => {
 
   const newQuantity = Math.max(0, product.quantity + delta);
 
-  await prisma.product.update({
-    where: { id },
-    data: { quantity: newQuantity },
+  await getDb().orm.public.Product.where({ id, userId }).update({
+    quantity: newQuantity,
   });
 
   revalidatePath("/inventory");
@@ -137,9 +137,8 @@ export const SetProductQuantity = async (id: string, quantity: number) => {
 
   const validQuantity = Math.max(0, Math.floor(quantity));
 
-  await prisma.product.updateMany({
-    where: { id, userId },
-    data: { quantity: validQuantity },
+  await getDb().orm.public.Product.where({ id, userId }).updateAndCount({
+    quantity: validQuantity,
   });
 
   revalidatePath("/dashboard");
