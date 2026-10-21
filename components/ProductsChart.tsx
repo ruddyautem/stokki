@@ -58,9 +58,38 @@ const formatDateToFrench = (dateStr: string) => {
 
 import { useLanguage } from "@/context/LanguageContext";
 
+// Custom Tooltip
+const CustomTooltip = ({
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  payload?: Array<{ value: number }>;
+  label?: string;
+}) => {
+  const { language } = useLanguage();
+
+  if (active && payload?.length) {
+    return (
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg p-3">
+        <p className="text-slate-900 dark:text-slate-100 font-semibold text-sm mb-1">
+          {formatDateToFrench(label || "")}
+        </p>
+        <p className="text-emerald-600 dark:text-emerald-400 text-sm font-medium">
+          <span className="font-semibold">
+            {language === "en" ? "Products:" : "Produits:"}
+          </span>{" "}
+          {payload[0].value}
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
 const ProductsChart = ({ data }: { data: ChartData[] }) => {
   const [isMounted, setIsMounted] = useState(false);
-  const { language } = useLanguage();
 
   useEffect(() => {
     setIsMounted(true);
@@ -75,34 +104,6 @@ const ProductsChart = ({ data }: { data: ChartData[] }) => {
   const formatTick = (dateStr: string) => {
     // Both fr-FR and en-GB use DD/MM
     return formatDateToFrench(dateStr);
-  };
-
-  // Custom Tooltip
-  const CustomTooltip = ({
-    active,
-    payload,
-    label,
-  }: {
-    active?: boolean;
-    payload?: Array<{ value: number }>;
-    label?: string;
-  }) => {
-    if (active && payload?.length) {
-      return (
-        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg p-3">
-          <p className="text-slate-900 dark:text-slate-100 font-semibold text-sm mb-1">
-            {formatTick(label || "")}
-          </p>
-          <p className="text-emerald-600 dark:text-emerald-400 text-sm font-medium">
-            <span className="font-semibold">
-              {language === "en" ? "Products:" : "Produits:"}
-            </span>{" "}
-            {payload[0].value}
-          </p>
-        </div>
-      );
-    }
-    return null;
   };
 
   if (!isMounted) {

@@ -79,6 +79,31 @@ const computeStockCategory = (
   return "in";
 };
 
+// Modern Checkbox component
+const Checkbox = ({
+  checked,
+  onChange,
+}: {
+  checked: boolean;
+  onChange?: () => void;
+}) => (
+  <button
+    type="button"
+    onClick={(e) => {
+      e.stopPropagation();
+      if (onChange) onChange();
+    }}
+    className={`relative w-4.5 h-4.5 border rounded-md transition-all duration-150 flex items-center justify-center ${
+      checked
+        ? "bg-indigo-600 border-indigo-600 text-white shadow-2xs"
+        : "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600"
+    } cursor-pointer`}
+    aria-label="Sélectionner"
+  >
+    {checked && <Check className="w-3 h-3 stroke-[3]" />}
+  </button>
+);
+
 const InventoryTable = ({
   items,
   initialStats,
@@ -464,31 +489,6 @@ const InventoryTable = ({
   const toggleSelect = (id: string) => {
     handleSelectOne(id, !selectedIds.includes(id));
   };
-
-  // Modern Checkbox component
-  const Checkbox = ({
-    checked,
-    onChange,
-  }: {
-    checked: boolean;
-    onChange?: () => void;
-  }) => (
-    <button
-      type="button"
-      onClick={(e) => {
-        e.stopPropagation();
-        if (onChange) onChange();
-      }}
-      className={`relative w-4.5 h-4.5 border rounded-md transition-all duration-150 flex items-center justify-center ${
-        checked
-          ? "bg-indigo-600 border-indigo-600 text-white shadow-2xs"
-          : "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600"
-      } cursor-pointer`}
-      aria-label="Sélectionner"
-    >
-      {checked && <Check className="w-3 h-3 stroke-[3]" />}
-    </button>
-  );
 
   return (
     <div className="space-y-3 sm:space-y-6">
