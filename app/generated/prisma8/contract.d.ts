@@ -3,12 +3,12 @@
 // To regenerate, run: prisma contract emit
 import type {
   CodecTypes as PgTypes,
-  Numeric,
-  TimestampString,
+  ParameterizedOutputTypesForTypeParams as PgParameterizedOutputTypes,
 } from '@prisma/orm-postgres/target/codec-types';
 import type { QueryOperationTypes as PgTargetQueryOps } from '@prisma/orm-postgres/target/operation-types';
 
 import type {
+  ColumnTypesFromStorage,
   ContractWithTypeMaps,
   RelationKeys,
   TypeMaps as TypeMapsType,
@@ -16,6 +16,7 @@ import type {
 import type {
   Contract as ContractType,
   ExecutionHashBase,
+  FieldTypesFromDomain,
   NamespaceId,
   ProfileHashBase,
   StorageHashBase,
@@ -24,7 +25,7 @@ import type {
 export type StorageHash =
   StorageHashBase<'c75d1e6428891b708c3d0bf51633cffa0b738e67bf0f1d2c767cc308b0c1e679'>;
 export type ExecutionHash =
-  ExecutionHashBase<'dfb70b251a9b90566b99bf7af7ffcc38e6913f849b7de7b5eb74a16bf2e2c0e2'>;
+  ExecutionHashBase<'32986cbbbe149b3c33b9583829e7ba1c725889b2ed9e0a00470215b003e7e268'>;
 export type ProfileHash =
   ProfileHashBase<'3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2'>;
 
@@ -235,79 +236,50 @@ type DefaultLiteralValue<CodecId extends string, Encoded> = CodecId extends keyo
     ? Encoded
     : CodecTypes[CodecId]['json']
   : Encoded;
+type ParameterizedOutputTypeFunctions = PgParameterizedOutputTypes;
 
-export type FieldOutputTypes = {
-  readonly public: {
-    readonly Product: {
-      readonly createdAt: TimestampString<3>;
-      readonly id: CodecTypes['pg/text@1']['output'];
-      readonly lowStockAt: CodecTypes['pg/int4@1']['output'] | null;
-      readonly name: CodecTypes['pg/text@1']['output'];
-      readonly price: Numeric<12, 2>;
-      readonly quantity: CodecTypes['pg/int4@1']['output'];
-      readonly sku: CodecTypes['pg/text@1']['output'] | null;
-      readonly updatedAt: TimestampString<3>;
-      readonly userId: CodecTypes['pg/text@1']['output'];
-    };
-  };
-};
-export type FieldInputTypes = {
-  readonly public: {
-    readonly Product: {
-      readonly createdAt: CodecTypes['pg/timestamp-string@1']['input'];
-      readonly id: CodecTypes['pg/text@1']['input'];
-      readonly lowStockAt: CodecTypes['pg/int4@1']['input'] | null;
-      readonly name: CodecTypes['pg/text@1']['input'];
-      readonly price: CodecTypes['pg/numeric@1']['input'];
-      readonly quantity: CodecTypes['pg/int4@1']['input'];
-      readonly sku: CodecTypes['pg/text@1']['input'] | null;
-      readonly updatedAt: CodecTypes['pg/timestamp-string@1']['input'];
-      readonly userId: CodecTypes['pg/text@1']['input'];
-    };
-  };
-};
-export type StorageColumnTypes = {
-  readonly public: {
-    readonly Product: {
-      readonly createdAt: TimestampString<3>;
-      readonly id: CodecTypes['pg/text@1']['output'];
-      readonly lowStockAt: CodecTypes['pg/int4@1']['output'] | null;
-      readonly name: CodecTypes['pg/text@1']['output'];
-      readonly price: Numeric<12, 2>;
-      readonly quantity: CodecTypes['pg/int4@1']['output'];
-      readonly sku: CodecTypes['pg/text@1']['output'] | null;
-      readonly updatedAt: TimestampString<3>;
-      readonly userId: CodecTypes['pg/text@1']['output'];
-    };
-  };
-};
-export type StorageColumnInputTypes = {
-  readonly public: {
-    readonly Product: {
-      readonly createdAt: CodecTypes['pg/timestamp-string@1']['input'];
-      readonly id: CodecTypes['pg/text@1']['input'];
-      readonly lowStockAt: CodecTypes['pg/int4@1']['input'] | null;
-      readonly name: CodecTypes['pg/text@1']['input'];
-      readonly price: CodecTypes['pg/numeric@1']['input'];
-      readonly quantity: CodecTypes['pg/int4@1']['input'];
-      readonly sku: CodecTypes['pg/text@1']['input'] | null;
-      readonly updatedAt: CodecTypes['pg/timestamp-string@1']['input'];
-      readonly userId: CodecTypes['pg/text@1']['input'];
-    };
-  };
-};
+type FieldTypeOverrides = {};
+export type FieldOutputTypes = FieldTypesFromDomain<
+  ContractBase['domain']['namespaces'],
+  CodecTypes,
+  ParameterizedOutputTypeFunctions,
+  FieldTypeOverrides,
+  'output'
+>;
+export type FieldInputTypes = FieldTypesFromDomain<
+  ContractBase['domain']['namespaces'],
+  CodecTypes,
+  ParameterizedOutputTypeFunctions,
+  FieldTypeOverrides,
+  'input'
+>;
+type ColumnTypeOverrides = {};
+export type StorageColumnTypes = ColumnTypesFromStorage<
+  ContractBase['storage'],
+  CodecTypes,
+  ParameterizedOutputTypeFunctions,
+  ColumnTypeOverrides,
+  'output'
+>;
+export type StorageColumnInputTypes = ColumnTypesFromStorage<
+  ContractBase['storage'],
+  CodecTypes,
+  ParameterizedOutputTypeFunctions,
+  ColumnTypeOverrides,
+  'input'
+>;
 
 export namespace Models {
   export type public_Product = {
-    createdAt: TimestampString<3>;
-    id: CodecTypes['pg/text@1']['output'];
-    lowStockAt: CodecTypes['pg/int4@1']['output'] | null;
-    name: CodecTypes['pg/text@1']['output'];
-    price: Numeric<12, 2>;
-    quantity: CodecTypes['pg/int4@1']['output'];
-    sku: CodecTypes['pg/text@1']['output'] | null;
-    updatedAt: TimestampString<3>;
-    userId: CodecTypes['pg/text@1']['output'];
+    createdAt: FieldOutputTypes['public']['Product']['createdAt'];
+    id: FieldOutputTypes['public']['Product']['id'];
+    lowStockAt: FieldOutputTypes['public']['Product']['lowStockAt'];
+    name: FieldOutputTypes['public']['Product']['name'];
+    price: FieldOutputTypes['public']['Product']['price'];
+    quantity: FieldOutputTypes['public']['Product']['quantity'];
+    sku: FieldOutputTypes['public']['Product']['sku'];
+    updatedAt: FieldOutputTypes['public']['Product']['updatedAt'];
+    userId: FieldOutputTypes['public']['Product']['userId'];
     readonly [RelationKeys]?: never;
   };
 }
@@ -552,8 +524,8 @@ type ContractBase = Omit<
           };
         },
         {
-          readonly onCreate: { readonly id: 'timestampNow'; readonly kind: 'generator' };
-          readonly onUpdate: { readonly id: 'timestampNow'; readonly kind: 'generator' };
+          readonly onCreate: { readonly id: 'timestampStringNow'; readonly kind: 'generator' };
+          readonly onUpdate: { readonly id: 'timestampStringNow'; readonly kind: 'generator' };
           readonly ref: {
             readonly entry: 'Product';
             readonly field: 'updatedAt';
