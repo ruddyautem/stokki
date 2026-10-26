@@ -138,7 +138,7 @@ export default function DashboardClient({
                 const stockLevel =
                   product.quantity === 0
                     ? 0
-                    : product.quantity <= (product.lowStockAt || 5)
+                    : product.quantity <= (product.lowStockAt ?? 5)
                       ? 1
                       : 2;
 

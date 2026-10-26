@@ -2,6 +2,7 @@ import InventoryClient from "@/components/InventoryClient";
 import getCurrentUser from "@/lib/auth";
 import { getDb } from "@/lib/prisma";
 import DeleteProduct from "@/lib/products";
+import { stockSummary } from "@/lib/stock-summary";
 
 const Inventory = async ({
   searchParams,
@@ -15,47 +16,17 @@ const Inventory = async ({
   const params = await searchParams;
   const searchQuery = (params.searchQuery ?? "").trim();
 
-  const [
-    totalResult,
-    inStockResult,
-    lowStockResult,
-    outOfStockResult,
-    products,
-  ] = await Promise.all([
-    db.orm.public.Product.where({ userId }).aggregate((agg) => ({
-      count: agg.count(),
-    })),
+  const [initialStats, products] = await Promise.all([
+    stockSummary(userId),
     db.orm.public.Product.where({ userId })
-      .where((product) => product.quantity.gt(5))
-      .aggregate((agg) => ({ count: agg.count() })),
-    db.orm.public.Product.where({ userId })
-      .where((product) => product.quantity.lt(5))
-      .where((product) => product.quantity.gte(1))
-      .aggregate((agg) => ({ count: agg.count() })),
-    db.orm.public.Product.where({ userId })
-      .where({ quantity: 0 })
-      .aggregate((agg) => ({ count: agg.count() })),
-    db.orm.public.Product.where({ userId })
-      .orderBy([
-        (product) => product.createdAt.desc(),
-        (product) => product.id.desc(),
-      ])
+      .orderBy([(p) => p.name.asc(), (p) => p.id.asc()])
+      .limit(18)
       .all(),
   ]);
-
-  // Convert Decimal to number for client component
   const items = products.map((product) => ({
     ...product,
     price: Number(product.price),
   }));
-
-  // Initial stats passed to InventoryClient for live synchronization
-  const initialStats = {
-    totalCount: totalResult.count,
-    inStockCount: inStockResult.count,
-    lowStockCount: lowStockResult.count,
-    outOfStockCount: outOfStockResult.count,
-  };
 
   // Server action to pass to client component
   const handleDeleteProduct = async (formData: FormData) => {

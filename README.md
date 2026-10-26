@@ -301,3 +301,12 @@ Then visit [http://localhost:3000](http://localhost:3000).
 ### ✅ Checks
 
 Run `bun run lint`, `bun x tsc --noEmit`, and `bun run build` before deployment. The repository does not yet contain a dedicated automated feature-test suite.
+
+
+## Correctifs d’inventaire et migration
+
+Les ajustements +/- utilisent un compare-and-set avec nouvelle tentative ; une édition directe porte la quantité attendue et refuse un conflit. La règle commune est : zéro = rupture ; de 1 au seuil inclus = faible ; au-dessus = disponible. Le seuil par défaut est 5, un seuil explicite de 0 est respecté. Recherche, tri et pagination interrogent maintenant la base par pages bornées, et le graphique agrège les 12 semaines visibles en UTC.
+
+Le contrat prévoit l’unicité (userId, sku), avec migration hors ligne dans migrations/app/20261026T1856_user_scoped_skus. La migration remplace uniquement l’index, sans suppression de produits. Une baseline et les snapshots sont également fournis pour une base neuve. **Aucune migration distante n’a été exécutée.** Sur une base existante, vérifier d’abord le marqueur et le schéma ; ne pas rejouer la baseline de création de tables. Tester le chemin de migration sur une copie sauvegardée avant de lancer prisma db migrate, puis prisma db verify avec la configuration de la bonne base. Le CLI installé et les instructions du skill local décrivent ce workflow Prisma 8. Ne pas utiliser db reset comme réparation.
+
+Tests : bun run test ; types : bunx tsc --noEmit ; build : bun run build (réémet le contrat avant Next). Les tests de concurrence simulent la base ; la validation PostgreSQL réelle et le plan de migration restent à effectuer en staging.

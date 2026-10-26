@@ -17,7 +17,13 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { type TranslationsType, useLanguage } from "@/context/LanguageContext";
-import { DeleteMultipleProducts, SetProductQuantity } from "@/lib/products";
+import {
+  DeleteMultipleProducts,
+  getInventoryPage,
+  SetProductQuantity,
+  UpdateProductQuantity,
+} from "@/lib/products";
+import { stockCategory as computeStockCategory } from "@/lib/stock";
 import ConfirmModal from "./ConfirmModal";
 import Pagination from "./Pagination";
 
@@ -45,7 +51,7 @@ interface InventoryTableProps {
 }
 
 const getStockBadge = (item: Product, t: TranslationsType) => {
-  if (item.quantity === 0) {
+  if (computeStockCategory(item.quantity, item.lowStockAt) === "out") {
     return {
       dot: "bg-rose-500 dark:bg-rose-400",
       badge:
@@ -53,7 +59,7 @@ const getStockBadge = (item: Product, t: TranslationsType) => {
       label: t.inventory.outOfStockBadge,
     };
   }
-  if (item.lowStockAt && item.quantity <= item.lowStockAt) {
+  if (computeStockCategory(item.quantity, item.lowStockAt) === "low") {
     return {
       dot: "bg-amber-500 dark:bg-amber-400",
       badge:
@@ -69,23 +75,15 @@ const getStockBadge = (item: Product, t: TranslationsType) => {
   };
 };
 
-const computeStockCategory = (
-  quantity: number,
-  lowStockAt: number | null,
-): "out" | "low" | "in" => {
-  if (quantity === 0) return "out";
-  const threshold = lowStockAt ?? 5;
-  if (quantity <= threshold) return "low";
-  return "in";
-};
-
 // Modern Checkbox component
 const Checkbox = ({
   checked,
   onChange,
+  label,
 }: {
   checked: boolean;
   onChange?: () => void;
+  label: string;
 }) => (
   <button
     type="button"
@@ -98,7 +96,8 @@ const Checkbox = ({
         ? "bg-indigo-600 border-indigo-600 text-white shadow-2xs"
         : "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600"
     } cursor-pointer`}
-    aria-label="Sélectionner"
+    aria-pressed={checked}
+    aria-label={label}
   >
     {checked && <Check className="w-3 h-3 stroke-[3]" />}
   </button>
@@ -140,7 +139,12 @@ const InventoryTable = ({
   // Refs to avoid race conditions, double clicks, and unnecessary re-renders
   const productsRef = useRef<Product[]>(products);
   productsRef.current = products;
-  const pendingDebounceRef = useRef<Record<string, NodeJS.Timeout>>({});
+  const pendingWrites = useRef<Record<string, Promise<void>>>({});
+  const writeVersions = useRef<Record<string, number>>({});
+  const [refreshVersion, setRefreshVersion] = useState(0);
+  const [resultCount, setResultCount] = useState(
+    initialStats?.totalCount ?? items.length,
+  );
   const lastSyncTimestampRef = useRef<number>(0);
 
   // Client-side live search query & pagination state
@@ -313,12 +317,9 @@ const InventoryTable = ({
   });
 
   // Instant Pagination
-  const totalPages = Math.max(1, Math.ceil(sortedProducts.length / pageSize));
+  const totalPages = Math.max(1, Math.ceil(resultCount / pageSize));
   const safeCurrentPage = Math.min(currentPage, totalPages);
-  const paginatedProducts = sortedProducts.slice(
-    (safeCurrentPage - 1) * pageSize,
-    safeCurrentPage * pageSize,
-  );
+  const paginatedProducts = sortedProducts.slice(0, pageSize);
 
   // Reset to page 1 whenever search query changes
   const handleSearchChange = (value: string) => {
@@ -327,22 +328,40 @@ const InventoryTable = ({
   };
 
   useEffect(() => {
-    // If a user just modified quantities in the last 1.5 seconds, don't overwrite with stale server items
-    if (Date.now() - lastSyncTimestampRef.current < 1500) return;
-
-    // Preserve local ordering in case of background refresh
-    setProducts((prev) => {
-      if (prev.length === 0) return items;
-      const incomingMap = new Map(items.map((it) => [it.id, it]));
-      // Map existing items in their current order, then append any genuinely new items
-      const updated = prev
-        .map((it) => incomingMap.get(it.id))
-        .filter((it): it is Product => it !== undefined);
-      const prevIdSet = new Set(prev.map((it) => it.id));
-      const newlyAdded = items.filter((it) => !prevIdSet.has(it.id));
-      return [...newlyAdded, ...updated];
-    });
-  }, [items]);
+    // A confirmed write/deletion must reload this page even if its filters did not change.
+    void refreshVersion;
+    let cancelled = false;
+    const timeout = setTimeout(() => {
+      getInventoryPage({
+        page: currentPage,
+        size: pageSize,
+        search: searchQuery,
+        sort: sortField || "createdAt",
+        direction: sortField ? sortDirection : "desc",
+      })
+        .then((result) => {
+          if (!cancelled && !Object.keys(pendingWrites.current).length) {
+            setProducts(result.items);
+            setResultCount(result.count);
+          }
+        })
+        .catch(() => {
+          if (!cancelled) toast.error(t.inventory.qtyUpdateError);
+        });
+    }, 150);
+    return () => {
+      cancelled = true;
+      clearTimeout(timeout);
+    };
+  }, [
+    currentPage,
+    pageSize,
+    searchQuery,
+    sortField,
+    sortDirection,
+    refreshVersion,
+    t.inventory.qtyUpdateError,
+  ]);
 
   useEffect(() => {
     if (initialStats) {
@@ -375,7 +394,11 @@ const InventoryTable = ({
     });
   };
 
-  const updateQuantity = (id: string, getNextQty: (curr: number) => number) => {
+  const updateQuantity = (
+    id: string,
+    getNextQty: (curr: number) => number,
+    relative = false,
+  ) => {
     lastSyncTimestampRef.current = Date.now();
 
     const currentItem = productsRef.current.find((p) => p.id === id);
@@ -398,37 +421,53 @@ const InventoryTable = ({
     );
     updateStatsLive(previousQuantity, nextQuantity, currentItem.lowStockAt);
 
-    // Debounce the backend persistence so rapid clicking on + or - batches cleanly
-    if (pendingDebounceRef.current[id]) {
-      clearTimeout(pendingDebounceRef.current[id]);
-    }
-
-    pendingDebounceRef.current[id] = setTimeout(async () => {
-      delete pendingDebounceRef.current[id];
-      try {
-        await SetProductQuantity(id, nextQuantity);
-      } catch (error) {
-        // Rollback on failure
-        setProducts((prev) =>
-          prev.map((item) =>
-            item.id === id ? { ...item, quantity: previousQuantity } : item,
-          ),
-        );
-        updateStatsLive(nextQuantity, previousQuantity, currentItem.lowStockAt);
-        console.error("Error setting quantity:", error);
-        toast.error(t.inventory.qtyUpdateError);
-      }
-    }, 250);
+    const version = (writeVersions.current[id] ?? 0) + 1;
+    writeVersions.current[id] = version;
+    const write = (pendingWrites.current[id] ?? Promise.resolve())
+      .then(async () => {
+        try {
+          const result = relative
+            ? await UpdateProductQuantity(id, nextQuantity - previousQuantity)
+            : await SetProductQuantity(id, nextQuantity, previousQuantity);
+          if (writeVersions.current[id] === version) {
+            setProducts((prev) =>
+              prev.map((item) =>
+                item.id === id ? { ...item, quantity: result.quantity } : item,
+              ),
+            );
+            updateStatsLive(
+              nextQuantity,
+              result.quantity,
+              currentItem.lowStockAt,
+            );
+          }
+        } catch (error) {
+          console.error("Stock update failed:", error);
+          toast.error(t.inventory.qtyUpdateError);
+        }
+      })
+      .finally(() => {
+        if (writeVersions.current[id] === version) {
+          delete pendingWrites.current[id];
+          setRefreshVersion((value) => value + 1);
+          router.refresh();
+        }
+      });
+    pendingWrites.current[id] = write;
   };
 
   const handleStepQuantity = (id: string, delta: number) => {
-    updateQuantity(id, (currentQty) => {
-      const next = Math.max(0, currentQty + delta);
-      if (editingId === id) {
-        setEditingValue(String(next));
-      }
-      return next;
-    });
+    updateQuantity(
+      id,
+      (currentQty) => {
+        const next = Math.max(0, currentQty + delta);
+        if (editingId === id) {
+          setEditingValue(String(next));
+        }
+        return next;
+      },
+      true,
+    );
   };
 
   const handleCommitEditing = (id: string) => {
@@ -477,6 +516,7 @@ const InventoryTable = ({
         setSingleDeleteId(null);
       }
       router.refresh();
+      setRefreshVersion((value) => value + 1);
       setShowConfirmModal(false);
     } catch (error) {
       console.error("Error deleting products:", error);
@@ -758,6 +798,7 @@ const InventoryTable = ({
                 <tr className="border-b border-slate-200/80 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">
                   <th className="py-2.5 pl-5 pr-3 w-12">
                     <Checkbox
+                      label={t.inventory.selectAll}
                       checked={allSelected}
                       onChange={() => handleSelectAll(!allSelected)}
                     />
@@ -873,6 +914,7 @@ const InventoryTable = ({
                         {/* Checkbox */}
                         <td className="py-2.5 pl-5 pr-3 align-middle">
                           <Checkbox
+                            label={`${t.inventory.selectProduct} ${item.name}`}
                             checked={isSelected}
                             onChange={() => toggleSelect(item.id)}
                           />
@@ -1065,7 +1107,7 @@ const InventoryTable = ({
           {/* Desktop Instant Client-Side Pagination inside table footer - always rendered for fixed stable height */}
           <div className="border-t border-slate-200/90 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 px-4 h-14 min-h-[56px] flex items-center justify-between">
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              {filteredProducts.length === 0 ? (
+              {resultCount === 0 ? (
                 <span>0 {t.inventory.paginationProducts}</span>
               ) : (
                 <>
@@ -1136,6 +1178,7 @@ const InventoryTable = ({
                   {/* Select Checkbox */}
                   <div className="shrink-0">
                     <Checkbox
+                      label={`${t.inventory.selectProduct} ${item.name}`}
                       checked={isSelected}
                       onChange={() => toggleSelect(item.id)}
                     />

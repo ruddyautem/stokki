@@ -1,6 +1,7 @@
 import DashboardClient from "@/components/DashboardClient";
 import getCurrentUser from "@/lib/auth";
 import { getDb } from "@/lib/prisma";
+import { stockSummary } from "@/lib/stock-summary";
 
 const DashboardPage = async () => {
   const user = await getCurrentUser();
@@ -8,56 +9,19 @@ const DashboardPage = async () => {
   if (!userId) throw new Error("Unauthorized");
   const db = getDb();
 
-  // PERF FIX: use DB-level count() for stock levels instead of JS-filtering
-  // all products in memory. totalValue still needs price*qty (no native Prisma
-  // aggregate for product expressions), but we avoid fetching createdAt for it.
-  const [
-    totalProductsResult,
-    lowStockResult,
-    inStockResult,
-    lowQuantityResult,
-    outOfStockResult,
-    priceQtyProducts,
-    weeklyProducts,
-    recent,
-  ] = await Promise.all([
-    db.orm.public.Product.where({ userId }).aggregate((agg) => ({
-      count: agg.count(),
-    })),
+  const [stats, recent] = await Promise.all([
+    stockSummary(userId),
     db.orm.public.Product.where({ userId })
-      .where((product) => product.lowStockAt.isNotNull())
-      .where((product) => product.quantity.lte(5))
-      .aggregate((agg) => ({ count: agg.count() })),
-    // DB counts — avoids loading all products into JS memory
-    db.orm.public.Product.where({ userId })
-      .where((product) => product.quantity.gt(5))
-      .aggregate((agg) => ({ count: agg.count() })),
-    db.orm.public.Product.where({ userId })
-      .where((product) => product.quantity.lt(5))
-      .where((product) => product.quantity.gte(1))
-      .aggregate((agg) => ({ count: agg.count() })),
-    db.orm.public.Product.where({ userId })
-      .where({ quantity: 0 })
-      .aggregate((agg) => ({ count: agg.count() })),
-    // Minimal selects — only what each computation needs
-    db.orm.public.Product.where({ userId }).select("price", "quantity").all(),
-    db.orm.public.Product.where({ userId }).select("createdAt").all(),
-    db.orm.public.Product.where({ userId })
-      .orderBy((product) => product.createdAt.desc())
+      .orderBy((p) => p.createdAt.desc())
       .limit(5)
       .all(),
   ]);
-
-  const totalProducts = totalProductsResult.count;
-  const lowStock = lowStockResult.count;
-  const inStockCount = inStockResult.count;
-  const lowStockCount = lowQuantityResult.count;
-  const outOfStockCount = outOfStockResult.count;
-
-  const totalValue = priceQtyProducts.reduce(
-    (sum, product) => sum + Number(product.price) * Number(product.quantity),
-    0,
-  );
+  const totalProducts = stats.totalCount;
+  const lowStock = stats.lowStockCount;
+  const inStockCount = stats.inStockCount;
+  const lowStockCount = stats.lowStockCount;
+  const outOfStockCount = stats.outOfStockCount;
+  const totalValue = stats.totalValue;
 
   // Convert exact decimal strings to numbers for Client Components.
   const serializedRecent = recent.map((product) => ({
@@ -75,24 +39,27 @@ const DashboardPage = async () => {
   const now = new Date();
   const weeklyProductsData = [];
 
+  // Fetch only grouped counts for the visible 12-week window, not all historical rows.
+  const since = new Date(now);
+  since.setUTCDate(since.getUTCDate() - 77);
+  since.setUTCHours(0, 0, 0, 0);
+  const weekly = await db.query(
+    db.raw
+      .sql`SELECT (("createdAt"::date - ${since.toISOString().slice(0, 10)}::date) / 7)::int AS bucket, COUNT(*)::int AS count FROM "public"."Product" WHERE "userId" = ${userId} AND "createdAt" >= ${since.toISOString()}::timestamp AND "createdAt" <= ${now.toISOString()}::timestamp GROUP BY bucket`
+      .returnsRow({ bucket: "pg/int4@1", count: "pg/int4@1" })
+      .build(),
+  );
   for (let i = 11; i >= 0; i--) {
     const weekStart = new Date(now);
-    weekStart.setDate(weekStart.getDate() - i * 7);
-    weekStart.setHours(0, 0, 0, 0);
+    weekStart.setUTCDate(weekStart.getUTCDate() - i * 7);
+    weekStart.setUTCHours(0, 0, 0, 0);
 
-    const weekEnd = new Date(weekStart);
-    weekEnd.setDate(weekEnd.getDate() + 6);
-    weekEnd.setHours(23, 59, 59, 999);
-
-    const weekLabel = `${String(weekStart.getMonth() + 1).padStart(
+    const weekLabel = `${String(weekStart.getUTCMonth() + 1).padStart(
       2,
       "0",
-    )}/${String(weekStart.getDate()).padStart(2, "0")}`;
+    )}/${String(weekStart.getUTCDate()).padStart(2, "0")}`;
 
-    const weekCount = weeklyProducts.filter((product) => {
-      const productDate = new Date(`${product.createdAt.replace(" ", "T")}Z`);
-      return productDate >= weekStart && productDate <= weekEnd;
-    }).length;
+    const weekCount = weekly.find((row) => row.bucket === 11 - i)?.count ?? 0;
     weeklyProductsData.push({ week: weekLabel, products: weekCount });
   }
 
