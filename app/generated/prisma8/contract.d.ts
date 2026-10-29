@@ -25,7 +25,7 @@ import type {
 export type StorageHash =
   StorageHashBase<'8401a83f152166a9c166d2af074e9ac52e0d23e4c6b0868f88ede481ba5f9cb3'>;
 export type ExecutionHash =
-  ExecutionHashBase<'32986cbbbe149b3c33b9583829e7ba1c725889b2ed9e0a00470215b003e7e268'>;
+  ExecutionHashBase<'6ecace3e3e0c87505d2e7ac677ff62fb9027d774996d8f4c83ca344ae45e7d07'>;
 export type ProfileHash =
   ProfileHashBase<'3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2'>;
 
@@ -43,6 +43,10 @@ export type AggregateTypes = {
       readonly 'pg/int4@1': { readonly output: 'pg/float8@1'; readonly nullable: true };
       readonly 'pg/int8@1': { readonly output: 'pg/float8@1'; readonly nullable: true };
       readonly 'pg/int8number@1': { readonly output: 'pg/float8@1'; readonly nullable: true };
+      readonly 'pg/interval-string@1': {
+        readonly output: 'pg/interval-string@1';
+        readonly nullable: true;
+      };
       readonly 'pg/interval@1': { readonly output: 'pg/interval@1'; readonly nullable: true };
       readonly 'pg/numeric@1': { readonly output: 'pg/numeric@1'; readonly nullable: true };
       readonly 'pg/time-string@1': { readonly output: 'pg/interval@1'; readonly nullable: true };
@@ -92,6 +96,10 @@ export type AggregateTypes = {
       readonly 'pg/int4@1': { readonly output: 'pg/int4@1'; readonly nullable: true };
       readonly 'pg/int8@1': { readonly output: 'pg/int8@1'; readonly nullable: true };
       readonly 'pg/int8number@1': { readonly output: 'pg/int8number@1'; readonly nullable: true };
+      readonly 'pg/interval-string@1': {
+        readonly output: 'pg/interval-string@1';
+        readonly nullable: true;
+      };
       readonly 'pg/interval@1': { readonly output: 'pg/interval@1'; readonly nullable: true };
       readonly 'pg/numeric@1': { readonly output: 'pg/numeric@1'; readonly nullable: true };
       readonly 'pg/text-array@1': { readonly output: 'pg/text-array@1'; readonly nullable: true };
@@ -99,6 +107,14 @@ export type AggregateTypes = {
       readonly 'pg/time-string@1': { readonly output: 'pg/time-string@1'; readonly nullable: true };
       readonly 'pg/time-temporal@1': {
         readonly output: 'pg/time-temporal@1';
+        readonly nullable: true;
+      };
+      readonly 'pg/timestamp-date@1': {
+        readonly output: 'pg/timestamp-date@1';
+        readonly nullable: true;
+      };
+      readonly 'pg/timestamp-instant@1': {
+        readonly output: 'pg/timestamp-instant@1';
         readonly nullable: true;
       };
       readonly 'pg/timestamp-string@1': {
@@ -152,6 +168,10 @@ export type AggregateTypes = {
       readonly 'pg/int4@1': { readonly output: 'pg/int4@1'; readonly nullable: true };
       readonly 'pg/int8@1': { readonly output: 'pg/int8@1'; readonly nullable: true };
       readonly 'pg/int8number@1': { readonly output: 'pg/int8number@1'; readonly nullable: true };
+      readonly 'pg/interval-string@1': {
+        readonly output: 'pg/interval-string@1';
+        readonly nullable: true;
+      };
       readonly 'pg/interval@1': { readonly output: 'pg/interval@1'; readonly nullable: true };
       readonly 'pg/numeric@1': { readonly output: 'pg/numeric@1'; readonly nullable: true };
       readonly 'pg/text-array@1': { readonly output: 'pg/text-array@1'; readonly nullable: true };
@@ -159,6 +179,14 @@ export type AggregateTypes = {
       readonly 'pg/time-string@1': { readonly output: 'pg/time-string@1'; readonly nullable: true };
       readonly 'pg/time-temporal@1': {
         readonly output: 'pg/time-temporal@1';
+        readonly nullable: true;
+      };
+      readonly 'pg/timestamp-date@1': {
+        readonly output: 'pg/timestamp-date@1';
+        readonly nullable: true;
+      };
+      readonly 'pg/timestamp-instant@1': {
+        readonly output: 'pg/timestamp-instant@1';
         readonly nullable: true;
       };
       readonly 'pg/timestamp-string@1': {
@@ -204,6 +232,10 @@ export type AggregateTypes = {
       readonly 'pg/int4@1': { readonly output: 'pg/int8number@1'; readonly nullable: true };
       readonly 'pg/int8@1': { readonly output: 'pg/int8number@1'; readonly nullable: true };
       readonly 'pg/int8number@1': { readonly output: 'pg/int8number@1'; readonly nullable: true };
+      readonly 'pg/interval-string@1': {
+        readonly output: 'pg/interval-string@1';
+        readonly nullable: true;
+      };
       readonly 'pg/interval@1': { readonly output: 'pg/interval@1'; readonly nullable: true };
       readonly 'pg/numeric@1': { readonly output: 'pg/numeric@1'; readonly nullable: true };
       readonly 'pg/time-string@1': { readonly output: 'pg/interval@1'; readonly nullable: true };
@@ -524,8 +556,16 @@ type ContractBase = Omit<
           };
         },
         {
-          readonly onCreate: { readonly id: 'timestampStringNow'; readonly kind: 'generator' };
-          readonly onUpdate: { readonly id: 'timestampStringNow'; readonly kind: 'generator' };
+          readonly onCreate: {
+            readonly id: 'timestampStringNow';
+            readonly kind: 'generator';
+            readonly params: { readonly precision: 3 };
+          };
+          readonly onUpdate: {
+            readonly id: 'timestampStringNow';
+            readonly kind: 'generator';
+            readonly params: { readonly precision: 3 };
+          };
           readonly ref: {
             readonly entry: 'Product';
             readonly field: 'updatedAt';

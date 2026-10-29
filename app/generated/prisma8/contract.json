@@ -241,7 +241,7 @@
     "storageHash": "8401a83f152166a9c166d2af074e9ac52e0d23e4c6b0868f88ede481ba5f9cb3"
   },
   "execution": {
-    "executionHash": "32986cbbbe149b3c33b9583829e7ba1c725889b2ed9e0a00470215b003e7e268",
+    "executionHash": "6ecace3e3e0c87505d2e7ac677ff62fb9027d774996d8f4c83ca344ae45e7d07",
     "mutations": {
       "defaults": [
         {
@@ -258,11 +258,17 @@
         {
           "onCreate": {
             "id": "timestampStringNow",
-            "kind": "generator"
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
           },
           "onUpdate": {
             "id": "timestampStringNow",
-            "kind": "generator"
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
           },
           "ref": {
             "entry": "Product",

@@ -11,7 +11,7 @@ namespace public {
     quantity   Int                                                       @default(0)
     lowStockAt Int?
     createdAt  TimestampString(3)                                        @default(now())
-    updatedAt  temporal.timestampString(3, onCreate: now, onUpdate: now)
+    updatedAt  TimestampString(3)                                        @onCreate(now()) @onUpdate(now())
 
     @@index([userId, sku], map: "Product_userId_sku_key", unique: true)
     @@index([userId, name], map: "Product_userId_name_idx")
