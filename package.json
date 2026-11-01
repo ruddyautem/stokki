@@ -12,9 +12,9 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@prisma/orm-postgres": "8.0.0-rc.21",
+    "@prisma/orm-postgres": "8.0.0-rc.22",
     "@stackframe/stack": "^2.8.108",
-    "lucide-react": "1.64.0",
+    "lucide-react": "1.66.0",
     "next": "16.4.3",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
@@ -29,9 +29,9 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "babel-plugin-react-compiler": "1.0.0",
-    "eslint": "^10.13.0",
+    "eslint": "10.14.0",
     "eslint-config-next": "16.4.3",
-    "prisma": "8.0.0-rc.28",
+    "prisma": "8.0.0-rc.29",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3"
   }
