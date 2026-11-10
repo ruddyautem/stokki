@@ -12,10 +12,10 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@prisma/orm-postgres": "8.0.0-rc.21",
+    "@prisma/orm-postgres": "8.0.0-rc.23",
     "@stackframe/stack": "^2.8.108",
-    "lucide-react": "1.66.0",
-    "next": "16.4.3",
+    "lucide-react": "1.71.0",
+    "next": "16.4.6",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "recharts": "^3.10.1",
@@ -23,16 +23,16 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.6.4",
-    "@tailwindcss/postcss": "^4.3.3",
+    "@biomejs/biome": "2.6.6",
+    "@tailwindcss/postcss": "4.3.5",
     "@types/node": "26.6.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "10.14.0",
-    "eslint-config-next": "16.4.3",
-    "prisma": "8.0.0-rc.29",
-    "tailwindcss": "^4.3.3",
+    "eslint-config-next": "16.4.6",
+    "prisma": "8.0.0-rc.33",
+    "tailwindcss": "4.3.5",
     "typescript": "^6.0.3"
   }
 }
